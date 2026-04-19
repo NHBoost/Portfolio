@@ -32,9 +32,10 @@ Portfolio commercial orienté performance, conçu comme un **outil de vente** po
 ## 3. Stack technique (OBLIGATOIRE)
 
 ### Frontend
-- **Next.js 14** (App Router)
+- **Next.js 16** (App Router, Turbopack)
+- **React 19**
 - **TypeScript**
-- **Tailwind CSS**
+- **Tailwind CSS v4** (CSS-first config via `@theme inline`)
 - **shadcn/ui**
 - **Framer Motion** (animations)
 
