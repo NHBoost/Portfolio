@@ -61,7 +61,11 @@ export function CaseStudyFilters({ sectors, initial }: Props) {
         onValueChange={(v) => update({ status: v })}
       >
         <SelectTrigger className="w-40">
-          <SelectValue placeholder="Statut" />
+          {initial.status ? (
+            <SelectValue />
+          ) : (
+            <span className="text-muted-foreground">Tous statuts</span>
+          )}
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ALL}>Tous statuts</SelectItem>
@@ -76,7 +80,11 @@ export function CaseStudyFilters({ sectors, initial }: Props) {
         onValueChange={(v) => update({ sector: v })}
       >
         <SelectTrigger className="w-48">
-          <SelectValue placeholder="Secteur" />
+          {initial.sector ? (
+            <SelectValue />
+          ) : (
+            <span className="text-muted-foreground">Tous secteurs</span>
+          )}
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ALL}>Tous secteurs</SelectItem>

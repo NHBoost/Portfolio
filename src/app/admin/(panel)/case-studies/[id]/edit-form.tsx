@@ -230,7 +230,11 @@ export function CaseStudyEditForm({
               onValueChange={(v) => setSectorId(v ?? NONE)}
             >
               <SelectTrigger id="sector_id">
-                <SelectValue placeholder="Selectionner..." />
+                {sectorId !== NONE ? (
+                  <SelectValue />
+                ) : (
+                  <span className="text-muted-foreground">— Aucun —</span>
+                )}
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={NONE}>— Aucun —</SelectItem>
