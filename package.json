@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:push": "node scripts/apply-migrations.mjs supabase/migrations/0001_init.sql supabase/migrations/0002_storage.sql supabase/seed.sql",
+    "db:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_REF --schema public > src/types/database.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
