@@ -17,7 +17,7 @@ type NavLink = {
 
 const links: NavLink[] = [
   { href: "/", label: "Accueil", exact: true },
-  { href: "/#etudes", label: "Études de cas" },
+  { href: "/etudes-de-cas", label: "Études de cas" },
   { href: "/#resultats", label: "Résultats" },
   { href: "/#realisations", label: "Réalisations" },
   { href: "/#services", label: "Services" },
@@ -100,9 +100,13 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
             className="hidden items-center rounded-full border border-border/80 bg-card/70 p-1 shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_1px_2px_rgba(20,25,50,0.04)] backdrop-blur-sm md:flex"
           >
             {links.map((l) => {
+              const isAnchor = l.href.includes("#");
               const isActive = l.exact
                 ? pathname === l.href
-                : pathname === l.href;
+                : isAnchor
+                  ? false
+                  : pathname === l.href ||
+                    pathname.startsWith(`${l.href}/`);
               return (
                 <Link
                   key={l.href}
