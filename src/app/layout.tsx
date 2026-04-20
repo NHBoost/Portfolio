@@ -16,10 +16,49 @@ const archivo = Archivo({
   weight: ["500", "600", "700", "800", "900"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+
 export const metadata: Metadata = {
-  title: "Portfolio ROI",
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
+  title: {
+    default: "Portfolio ROI — Études de cas orientées résultats",
+    template: "%s · Portfolio ROI",
+  },
   description:
-    "Études de cas business orientées ROI : stratégie, exécution, résultats.",
+    "Bibliothèque d'études de cas business mesurées. Stratégie, exécution, chiffres réellement encaissés. Pour savoir ce que votre marketing peut vraiment vous rapporter.",
+  applicationName: "Portfolio ROI",
+  keywords: [
+    "études de cas",
+    "ROI",
+    "Meta Ads",
+    "tunnel de conversion",
+    "marketing de performance",
+    "UGC",
+    "acquisition clients",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Portfolio ROI",
+    title: "Portfolio ROI — Études de cas orientées résultats",
+    description:
+      "Bibliothèque d'études de cas mesurées : stratégie, exécution, ROI encaissé.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Portfolio ROI — Études de cas orientées résultats",
+    description:
+      "Bibliothèque d'études de cas mesurées : stratégie, exécution, ROI encaissé.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
