@@ -110,7 +110,7 @@ export function Hero({
           Portfolio · Performance mesurée
         </motion.p>
 
-        <div className="!mt-2 grid items-end gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
+        <div className="!mt-0.5 grid items-end gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
           <div className="space-y-9">
             <motion.h1
               id="hero-title"
