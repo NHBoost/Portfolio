@@ -100,7 +100,7 @@ export function Hero({
         initial="hidden"
         animate="show"
         variants={stagger}
-        className="relative mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 md:px-8"
+        className="relative mx-auto flex w-full max-w-6xl flex-col space-y-14 px-4 md:px-8"
       >
         <motion.p
           variants={item}
@@ -110,7 +110,7 @@ export function Hero({
           Portfolio · Performance mesurée
         </motion.p>
 
-        <div className="grid items-end gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
+        <div className="!mt-5 grid items-end gap-12 md:grid-cols-[1.2fr_1fr] md:gap-16">
           <div className="space-y-9">
             <motion.h1
               id="hero-title"
