@@ -115,7 +115,7 @@ export function Hero({
             <motion.h1
               id="hero-title"
               variants={item}
-              className="font-display text-[clamp(44px,7vw,88px)] font-semibold leading-[0.96] tracking-[-0.025em] text-foreground text-balance"
+              className="font-display text-[35px] font-semibold leading-[1.02] tracking-[-0.02em] text-foreground text-balance md:text-[40px] lg:text-[45px]"
             >
               Chaque euro investi{" "}
               <span className="text-muted-foreground/60">laisse</span>{" "}
