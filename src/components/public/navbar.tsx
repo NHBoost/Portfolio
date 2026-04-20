@@ -10,6 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import type { FranchiseSettings } from "@/lib/public-data";
 
 const links = [
+  { href: "/", label: "Accueil", exact: true },
   { href: "/#etudes", label: "Études de cas" },
   { href: "/#resultats", label: "Résultats" },
   { href: "/#realisations", label: "Réalisations" },
@@ -76,18 +77,23 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
             aria-label="Navigation principale"
             className="hidden flex-1 items-center justify-center gap-7 md:flex"
           >
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={cn(
-                  "text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground",
-                  pathname === l.href && "text-foreground",
-                )}
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) => {
+              const isActive = l.exact
+                ? pathname === l.href
+                : pathname === l.href;
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={cn(
+                    "text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground",
+                    isActive && "text-foreground",
+                  )}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="ml-auto flex items-center gap-2 md:ml-0">
