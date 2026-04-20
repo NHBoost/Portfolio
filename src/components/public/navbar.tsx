@@ -9,7 +9,13 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import type { FranchiseSettings } from "@/lib/public-data";
 
-const links = [
+type NavLink = {
+  href: string;
+  label: string;
+  exact?: boolean;
+};
+
+const links: NavLink[] = [
   { href: "/", label: "Accueil", exact: true },
   { href: "/#etudes", label: "Études de cas" },
   { href: "/#resultats", label: "Résultats" },
@@ -23,6 +29,7 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -40,7 +47,6 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
     };
   }, [mobileOpen]);
 
-  // Close mobile menu when navigating
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -55,27 +61,43 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 border-b border-transparent transition-all duration-200",
+          "sticky top-0 z-40 transition-all duration-300",
           scrolled || mobileOpen
-            ? "border-border bg-background/85 backdrop-blur-md"
-            : "bg-background/0",
+            ? "border-b border-border/80 bg-background/80 shadow-[0_1px_0_rgba(0,0,0,0.02)] backdrop-blur-xl"
+            : "border-b border-transparent bg-background/0",
         )}
       >
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-6 px-4 md:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-sm ring-1 ring-black/5">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 md:px-8">
+          {/* LOGO */}
+          <Link
+            href="/"
+            aria-label={`${brandName} — accueil`}
+            className="group inline-flex items-center gap-2.5 transition-opacity"
+          >
+            <span className="relative flex h-9 w-9 items-center justify-center rounded-[10px] bg-accent text-accent-foreground ring-1 ring-inset ring-white/10 shadow-[0_2px_6px_-1px_rgba(20,25,50,0.35)] transition-transform duration-300 group-hover:scale-[1.03]">
               <span className="font-display text-[15px] font-black leading-none tracking-tight">
                 {brandName.charAt(0).toUpperCase()}
               </span>
+              <span
+                aria-hidden
+                className="absolute -inset-0.5 rounded-[12px] bg-[radial-gradient(circle_at_top,rgba(86,148,189,0.25),transparent_70%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              />
             </span>
-            <span className="font-display text-sm font-semibold tracking-tight text-foreground">
-              {brandName}
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-[13px] font-semibold tracking-[-0.005em] text-foreground">
+                {brandName}
+              </span>
+              <span className="mt-1 text-[9.5px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                Performance mesurée
+              </span>
             </span>
           </Link>
 
+          {/* DESKTOP NAV — pill container with animated hover */}
           <nav
             aria-label="Navigation principale"
-            className="hidden flex-1 items-center justify-center gap-7 md:flex"
+            onMouseLeave={() => setHovered(null)}
+            className="hidden items-center rounded-full border border-border/80 bg-card/70 p-1 shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_1px_2px_rgba(20,25,50,0.04)] backdrop-blur-sm md:flex"
           >
             {links.map((l) => {
               const isActive = l.exact
@@ -85,18 +107,44 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
                 <Link
                   key={l.href}
                   href={l.href}
+                  onMouseEnter={() => setHovered(l.href)}
+                  onFocus={() => setHovered(l.href)}
                   className={cn(
-                    "text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground",
-                    isActive && "text-foreground",
+                    "relative rounded-full px-3.5 py-1.5 text-[12.5px] font-medium tracking-tight transition-colors duration-200",
+                    isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {l.label}
+                  {hovered === l.href ? (
+                    <motion.span
+                      layoutId="nav-hover"
+                      aria-hidden
+                      className="absolute inset-0 rounded-full bg-muted/80"
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 34,
+                        mass: 0.65,
+                      }}
+                    />
+                  ) : null}
+                  <span className="relative flex items-center gap-1.5">
+                    {isActive ? (
+                      <span
+                        aria-hidden
+                        className="h-1 w-1 rounded-full bg-brand shadow-[0_0_0_2px_rgba(86,148,189,0.15)]"
+                      />
+                    ) : null}
+                    {l.label}
+                  </span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 md:ml-0">
+          {/* CTA + MOBILE */}
+          <div className="flex items-center gap-2">
             {cta ? (
               <Link
                 href={cta}
@@ -104,11 +152,11 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
                 rel={cta.startsWith("http") ? "noreferrer" : undefined}
                 className={cn(
                   buttonVariants({ variant: "default", size: "sm" }),
-                  "hidden md:inline-flex",
+                  "group hidden h-9 gap-1.5 rounded-full px-4 text-[12.5px] font-semibold shadow-[0_1px_0_rgba(255,255,255,0.08)_inset,0_4px_12px_-2px_rgba(62,100,147,0.35)] transition-shadow hover:shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_6px_18px_-2px_rgba(62,100,147,0.45)] md:inline-flex",
                 )}
               >
                 {ctaLabel}
-                <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             ) : null}
             <button
@@ -116,7 +164,7 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
               aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((v) => !v)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-muted md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition-all duration-200 hover:border-brand/40 hover:bg-muted active:scale-95 md:hidden"
             >
               {mobileOpen ? (
                 <X className="h-4 w-4" />
@@ -162,7 +210,7 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
                   rel={cta.startsWith("http") ? "noreferrer" : undefined}
                   className={cn(
                     buttonVariants({ variant: "default", size: "lg" }),
-                    "mt-8 w-full",
+                    "mt-8 w-full rounded-full",
                   )}
                 >
                   {ctaLabel}
