@@ -8,7 +8,7 @@ export function Footer({ settings }: { settings: FranchiseSettings | null }) {
 
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:gap-20 md:px-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-20 md:px-8">
         <div className="space-y-4">
           <div className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-sm ring-1 ring-black/5">

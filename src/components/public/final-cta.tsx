@@ -27,7 +27,7 @@ export function FinalCta({
     <section
       id="contact"
       aria-labelledby="final-cta-title"
-      className="relative bg-background pb-24 pt-20 md:pb-32 md:pt-28"
+      className="relative bg-background py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.div

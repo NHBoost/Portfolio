@@ -41,7 +41,7 @@ export function CaseHero({
   ];
 
   return (
-    <section className="relative pb-8 pt-10 md:pb-12 md:pt-14">
+    <section className="relative py-10">
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <Link
           href="/etudes-de-cas"

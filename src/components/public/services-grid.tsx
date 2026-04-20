@@ -61,7 +61,7 @@ export function ServicesGrid({ items }: { items: ServiceRow[] }) {
     <section
       id="services"
       aria-labelledby="services-title"
-      className="relative bg-surface-muted/70 py-20 md:py-28"
+      className="relative bg-surface-muted/70 py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.header

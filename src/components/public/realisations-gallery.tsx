@@ -19,7 +19,7 @@ export function RealisationsGallery({ items }: { items: RealisationMedia[] }) {
     <section
       id="realisations"
       aria-labelledby="realisations-title"
-      className="relative overflow-hidden bg-background py-20 md:py-28"
+      className="relative overflow-hidden bg-background py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.header

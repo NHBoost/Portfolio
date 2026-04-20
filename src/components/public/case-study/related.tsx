@@ -12,7 +12,7 @@ export function RelatedCases({ items }: { items: CaseStudyCardData[] }) {
     <section
       id="etudes-similaires"
       aria-labelledby="related-title"
-      className="bg-surface-muted/60 py-20 md:py-28"
+      className="bg-surface-muted/60 py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

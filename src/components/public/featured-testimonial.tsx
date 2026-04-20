@@ -17,7 +17,7 @@ export function FeaturedTestimonial({
   return (
     <section
       aria-labelledby="featured-testimonial-title"
-      className="relative overflow-hidden bg-accent py-24 text-accent-foreground md:py-32"
+      className="relative overflow-hidden bg-accent py-10 text-accent-foreground"
     >
       <div
         aria-hidden

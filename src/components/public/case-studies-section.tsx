@@ -15,7 +15,7 @@ export function CaseStudiesSection({
       <section
         id="etudes"
         aria-labelledby="etudes-section-title"
-        className="relative bg-surface-muted/60 py-20 md:py-28"
+        className="relative bg-surface-muted/60 py-10"
       >
         <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-4 px-4 md:px-8">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-deep">
@@ -42,7 +42,7 @@ export function CaseStudiesSection({
     <section
       id="etudes"
       aria-labelledby="etudes-section-title"
-      className="relative bg-surface-muted/60 py-20 md:py-28"
+      className="relative bg-surface-muted/60 py-10"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 md:px-8">
         <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

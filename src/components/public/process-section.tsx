@@ -65,7 +65,7 @@ export function ProcessSection() {
     <section
       id="process"
       aria-labelledby="process-title"
-      className="relative overflow-hidden bg-background py-24 md:py-32"
+      className="relative overflow-hidden bg-background py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.header

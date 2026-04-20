@@ -13,7 +13,7 @@ export function LogosStrip({ items }: { items: TrustEntry[] }) {
   return (
     <section
       aria-labelledby="trust-title"
-      className="relative border-y border-border/70 bg-background py-10 md:py-14"
+      className="relative border-y border-border/70 bg-background py-10"
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.p

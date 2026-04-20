@@ -61,7 +61,7 @@ export function GlobalStatsBand({ stats }: { stats: GlobalStats | null }) {
     <section
       id="resultats"
       aria-labelledby="resultats-title"
-      className="relative overflow-hidden border-y border-border bg-surface-muted/70 py-24 md:py-32"
+      className="relative overflow-hidden border-y border-border bg-surface-muted/70 py-10"
     >
       <div
         aria-hidden

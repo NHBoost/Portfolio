@@ -112,7 +112,7 @@ export default async function CaseStudiesListPublicPage({
     <>
       <section
         aria-labelledby="etudes-title"
-        className="relative pb-10 pt-16 md:pb-12 md:pt-24"
+        className="relative py-10"
       >
         <div
           aria-hidden
@@ -140,7 +140,7 @@ export default async function CaseStudiesListPublicPage({
 
       <section
         id="etudes"
-        className="mx-auto w-full max-w-6xl px-4 pb-24 md:px-8"
+        className="mx-auto w-full max-w-6xl px-4 pb-10 md:px-8"
       >
         <div className="mb-8">
           <CaseStudiesFilters

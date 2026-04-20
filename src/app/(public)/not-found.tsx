@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 export default function NotFoundPublic() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="relative overflow-hidden py-10">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-30 mesh-grid [mask-image:radial-gradient(circle_at_center,rgba(0,0,0,0.9),transparent_70%)]"

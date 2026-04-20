@@ -23,7 +23,7 @@ export function RoiBlock({
     <section
       id="roi"
       aria-labelledby="roi-title"
-      className="relative overflow-hidden bg-accent py-28 text-accent-foreground md:py-36"
+      className="relative overflow-hidden bg-accent py-10 text-accent-foreground"
     >
       <div
         aria-hidden

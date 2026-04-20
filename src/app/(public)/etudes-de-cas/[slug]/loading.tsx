@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-8">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-8">
       <div className="h-3 w-32 animate-pulse rounded-md bg-muted" />
       <div className="mt-8 grid gap-8 md:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">

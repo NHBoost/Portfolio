@@ -81,7 +81,7 @@ export function Hero({
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative overflow-hidden bg-background pt-14 pb-24 md:pt-20 md:pb-32"
+      className="relative overflow-hidden bg-background py-10"
     >
       <div
         aria-hidden

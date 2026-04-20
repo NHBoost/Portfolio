@@ -76,7 +76,7 @@ export function SectionShell({
     <section
       id={id}
       aria-labelledby={id ? `${id}-title` : undefined}
-      className={cn("relative py-20 md:py-28", bg)}
+      className={cn("relative py-10", bg)}
     >
       <div className="mx-auto w-full max-w-6xl px-4 md:px-8">
         <motion.header
