@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import { PageHeader } from "@/components/admin/page-header";
 import { formatCurrency, formatDate, formatRoi } from "@/lib/format";
 import { CaseStudyRowActions } from "./row-actions";
 import { CaseStudyFilters } from "./filters";
@@ -21,10 +21,25 @@ type SearchParams = Promise<{
   q?: string;
 }>;
 
-const statusLabel: Record<string, string> = {
-  draft: "Brouillon",
-  published: "Publiee",
-  archived: "Archivee",
+const statusMeta: Record<
+  "draft" | "published" | "archived",
+  { label: string; dot: string; text: string }
+> = {
+  published: {
+    label: "Publiée",
+    dot: "bg-emerald-500",
+    text: "text-emerald-700 dark:text-emerald-400",
+  },
+  draft: {
+    label: "Brouillon",
+    dot: "bg-amber-400",
+    text: "text-amber-700 dark:text-amber-300",
+  },
+  archived: {
+    label: "Archivée",
+    dot: "bg-muted-foreground/40",
+    text: "text-muted-foreground",
+  },
 };
 
 export default async function CaseStudiesListPage({
@@ -58,42 +73,55 @@ export default async function CaseStudiesListPage({
   ]);
 
   return (
-    <div className="space-y-6 p-6 md:p-8">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-accent">
-            Etudes de cas
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Cree, modifie et publie les etudes de cas du portfolio.
-          </p>
-        </div>
-        <Link
-          href="/admin/case-studies/new"
-          className={buttonVariants({ variant: "default" })}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Nouvelle etude
-        </Link>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6 md:p-10">
+      <PageHeader
+        eyebrow="Bibliothèque"
+        title="Études de cas"
+        description="Créez, modifiez et publiez les études qui alimentent le site public. Chaque entrée reflète une transformation business mesurable."
+        actions={
+          <Link
+            href="/admin/case-studies/new"
+            className={buttonVariants({ variant: "default" })}
+          >
+            <Plus className="mr-1.5 h-4 w-4" />
+            Nouvelle étude
+          </Link>
+        }
+      />
 
       <CaseStudyFilters
         sectors={sectors ?? []}
         initial={{ status, sector, q }}
       />
 
-      <div className="rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Projet</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead>Secteur</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead className="text-right">Budget</TableHead>
-              <TableHead className="text-right">CA</TableHead>
-              <TableHead className="text-right">ROI</TableHead>
-              <TableHead>Cree</TableHead>
+            <TableRow className="border-b-border hover:bg-transparent">
+              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Projet
+              </TableHead>
+              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Client
+              </TableHead>
+              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Secteur
+              </TableHead>
+              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Statut
+              </TableHead>
+              <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Budget
+              </TableHead>
+              <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                CA généré
+              </TableHead>
+              <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                ROI
+              </TableHead>
+              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Créée
+              </TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
@@ -105,56 +133,74 @@ export default async function CaseStudiesListPage({
                 </TableCell>
               </TableRow>
             ) : (rows ?? []).length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={9}
-                  className="py-10 text-center text-muted-foreground"
-                >
-                  Aucune etude de cas pour le moment.
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={9} className="py-16 text-center">
+                  <p className="font-display text-lg font-semibold text-foreground">
+                    Rien à afficher pour l&apos;instant
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Ajuste les filtres ou crée une nouvelle étude.
+                  </p>
                 </TableCell>
               </TableRow>
             ) : (
-              (rows ?? []).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium">
-                    <Link
-                      href={`/admin/case-studies/${row.id}`}
-                      className="hover:text-primary hover:underline"
-                    >
-                      {row.project_name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{row.client_name ?? "—"}</TableCell>
-                  <TableCell>{row.sector?.name ?? "—"}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        row.status === "published" ? "default" : "secondary"
-                      }
-                    >
-                      {statusLabel[row.status]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {formatCurrency(row.ad_budget)}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {formatCurrency(row.revenue_generated)}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums font-medium">
-                    {formatRoi(row.roi)}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDate(row.created_at)}
-                  </TableCell>
-                  <TableCell>
-                    <CaseStudyRowActions
-                      id={row.id}
-                      status={row.status}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
+              (rows ?? []).map((row) => {
+                const meta = statusMeta[row.status];
+                return (
+                  <TableRow
+                    key={row.id}
+                    className="group border-b-border/60 transition-colors hover:bg-surface-muted"
+                  >
+                    <TableCell className="py-4">
+                      <Link
+                        href={`/admin/case-studies/${row.id}`}
+                        className="font-medium text-foreground transition-colors hover:text-brand-deep"
+                      >
+                        {row.project_name}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {row.client_name ?? "—"}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {row.sector?.name ?? "—"}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center gap-1.5 text-xs font-medium ${meta.text}`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`h-1.5 w-1.5 rounded-full ${meta.dot}`}
+                        />
+                        {meta.label}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums text-muted-foreground">
+                      {formatCurrency(row.ad_budget)}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {formatCurrency(row.revenue_generated)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <span className="font-display text-base font-semibold tabular-nums text-brand-deep">
+                        {formatRoi(row.roi)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {formatDate(row.created_at)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                        <CaseStudyRowActions
+                          id={row.id}
+                          status={row.status}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

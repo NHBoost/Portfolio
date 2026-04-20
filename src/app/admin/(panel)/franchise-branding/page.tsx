@@ -1,12 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/admin/page-header";
 import { FranchiseForm } from "./form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default async function FranchiseBrandingPage() {
   const supabase = await createSupabaseServerClient();
@@ -18,7 +12,7 @@ export default async function FranchiseBrandingPage() {
 
   if (!data) {
     return (
-      <div className="p-6 md:p-8">
+      <div className="p-6 md:p-10">
         <p className="text-sm text-destructive">
           Aucune ligne franchise_settings. Relance le seed Supabase.
         </p>
@@ -27,29 +21,15 @@ export default async function FranchiseBrandingPage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-6 p-6 md:p-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-accent">
-          Branding franchise
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Identite du site (logo, couleurs, coordonnees). Permet de dupliquer
-          le portfolio pour une nouvelle franchise en quelques minutes.
-        </p>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6 md:p-10">
+      <PageHeader
+        eyebrow="Paramètres"
+        title="Branding franchise"
+        description="Identité visuelle et coordonnées. Duplique le portfolio pour une nouvelle franchise en quelques minutes."
+      />
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs md:p-8">
+        <FranchiseForm settings={data} />
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Parametres</CardTitle>
-          <CardDescription>
-            Reserve au role admin. Les couleurs reprennent les variables CSS
-            du site public.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FranchiseForm settings={data} />
-        </CardContent>
-      </Card>
     </div>
   );
 }

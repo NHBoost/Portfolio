@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -23,12 +24,17 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   }
 
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-xl border bg-card p-6 shadow-sm"
+      className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-lg"
     >
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="email" className="text-xs font-medium">
+          Email professionnel
+        </Label>
         <Input
           id="email"
           name="email"
@@ -38,8 +44,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
           placeholder="toi@exemple.com"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="password" className="text-xs font-medium">
+          Mot de passe
+        </Label>
         <Input
           id="password"
           name="password"
@@ -52,13 +60,16 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
         <input type="hidden" name="redirectTo" value={redirectTo} />
       ) : null}
       {error ? (
-        <p className="text-sm text-destructive" role="alert">
+        <p
+          role="alert"
+          className="rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+        >
           {error}
         </p>
       ) : null}
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Connexion..." : "Se connecter"}
+        {isPending ? "Connexion en cours..." : "Se connecter"}
       </Button>
-    </form>
+    </motion.form>
   );
 }

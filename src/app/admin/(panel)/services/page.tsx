@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/admin/page-header";
 import { TagManager } from "@/components/admin/tag-manager";
 import {
   createServiceAction,
@@ -14,17 +15,12 @@ export default async function ServicesPage() {
     .order("name");
 
   return (
-    <div className="space-y-6 p-6 md:p-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-accent">
-          Services
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Categories de prestations associees aux etudes de cas (Meta Ads, SEO,
-          funnel, etc.).
-        </p>
-      </div>
-
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-6 md:p-10">
+      <PageHeader
+        eyebrow="Bibliothèque"
+        title="Services"
+        description="Prestations associées aux études : Meta Ads, SEO, funnel, branding, etc."
+      />
       <TagManager
         items={services ?? []}
         onCreate={createServiceAction}

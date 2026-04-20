@@ -1,12 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/admin/page-header";
 import { GlobalStatsForm } from "./form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default async function GlobalStatsPage() {
   const supabase = await createSupabaseServerClient();
@@ -18,7 +12,7 @@ export default async function GlobalStatsPage() {
 
   if (!data) {
     return (
-      <div className="p-6 md:p-8">
+      <div className="p-6 md:p-10">
         <p className="text-sm text-destructive">
           Aucune ligne global_stats. Relance le seed Supabase.
         </p>
@@ -27,31 +21,15 @@ export default async function GlobalStatsPage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-6 p-6 md:p-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-accent">
-          Stats globales
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Chiffres affiches sur la bandeau &laquo;&nbsp;Resultats
-          globaux&nbsp;&raquo; du site public.
-        </p>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6 md:p-10">
+      <PageHeader
+        eyebrow="Paramètres"
+        title="Stats globales"
+        description="Les cinq chiffres affichés sur le bandeau « Résultats globaux » du site public, pour créer crédibilité et effet de masse."
+      />
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs md:p-8">
+        <GlobalStatsForm stats={data} />
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            Ces chiffres sont pousses en header / hero du site public
-          </CardTitle>
-          <CardDescription>
-            Ils servent a creer un effet de masse. Mets-les a jour quand tu
-            publies de nouvelles etudes.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <GlobalStatsForm stats={data} />
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -54,9 +54,11 @@ export function NewCaseStudyForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="project_name">Nom du projet *</Label>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-1.5">
+        <Label htmlFor="project_name" className="text-xs font-medium">
+          Nom du projet *
+        </Label>
         <Input
           id="project_name"
           name="project_name"
@@ -64,10 +66,13 @@ export function NewCaseStudyForm({
           onChange={(e) => handleNameChange(e.target.value)}
           required
           autoFocus
+          placeholder="Ex: Restaurant Le Colibri"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="slug">Slug</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="slug" className="text-xs font-medium">
+          Slug
+        </Label>
         <Input
           id="slug"
           name="slug"
@@ -77,17 +82,26 @@ export function NewCaseStudyForm({
             setSlugTouched(true);
           }}
           placeholder="mon-projet"
+          className="font-mono text-sm"
         />
-        <p className="text-xs text-muted-foreground">
-          Utilise dans l&apos;URL publique. Cree depuis le nom si vide.
+        <p className="text-xs text-muted-foreground/80">
+          Utilisé dans l&apos;URL publique. Créé depuis le nom si vide.
         </p>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="client_name">Client</Label>
-        <Input id="client_name" name="client_name" />
+      <div className="space-y-1.5">
+        <Label htmlFor="client_name" className="text-xs font-medium">
+          Client
+        </Label>
+        <Input
+          id="client_name"
+          name="client_name"
+          placeholder="Nom commercial du client"
+        />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="sector_id">Secteur</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="sector_id" className="text-xs font-medium">
+          Secteur
+        </Label>
         <Select
           value={sectorId}
           onValueChange={(v) => setSectorId(v ?? NONE)}
@@ -109,9 +123,9 @@ export function NewCaseStudyForm({
           </SelectContent>
         </Select>
       </div>
-      <div className="pt-2">
+      <div className="flex items-center justify-end gap-2 pt-2">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Creation..." : "Creer le brouillon"}
+          {isPending ? "Création..." : "Créer le brouillon"}
         </Button>
       </div>
     </form>

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -41,26 +41,33 @@ export function CaseStudyFilters({ sectors, initial }: Props) {
 
   return (
     <div
-      className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-3"
+      className="flex flex-wrap items-center gap-2"
       aria-busy={isPending}
     >
-      <Input
-        placeholder="Rechercher un projet..."
-        defaultValue={initial.q ?? ""}
-        onBlur={(e) => update({ q: e.currentTarget.value })}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            update({ q: e.currentTarget.value });
-          }
-        }}
-        className="max-w-sm"
-      />
+      <div className="relative flex-1 min-w-[220px] max-w-sm">
+        <Search
+          className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
+        />
+        <input
+          type="search"
+          placeholder="Rechercher un projet..."
+          defaultValue={initial.q ?? ""}
+          onBlur={(e) => update({ q: e.currentTarget.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              update({ q: e.currentTarget.value });
+            }
+          }}
+          className="h-9 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
 
       <Select
         value={initial.status ?? ALL}
         onValueChange={(v) => update({ status: v })}
       >
-        <SelectTrigger className="w-40">
+        <SelectTrigger className="h-9 w-40 bg-card">
           {initial.status ? (
             <SelectValue />
           ) : (
@@ -70,8 +77,8 @@ export function CaseStudyFilters({ sectors, initial }: Props) {
         <SelectContent>
           <SelectItem value={ALL}>Tous statuts</SelectItem>
           <SelectItem value="draft">Brouillon</SelectItem>
-          <SelectItem value="published">Publiee</SelectItem>
-          <SelectItem value="archived">Archivee</SelectItem>
+          <SelectItem value="published">Publiée</SelectItem>
+          <SelectItem value="archived">Archivée</SelectItem>
         </SelectContent>
       </Select>
 
@@ -79,7 +86,7 @@ export function CaseStudyFilters({ sectors, initial }: Props) {
         value={initial.sector ?? ALL}
         onValueChange={(v) => update({ sector: v })}
       >
-        <SelectTrigger className="w-48">
+        <SelectTrigger className="h-9 w-48 bg-card">
           {initial.sector ? (
             <SelectValue />
           ) : (

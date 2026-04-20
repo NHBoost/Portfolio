@@ -1,12 +1,5 @@
-import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { PageHeader } from "@/components/admin/page-header";
 import { NewCaseStudyForm } from "./form";
 
 export default async function NewCaseStudyPage() {
@@ -17,36 +10,19 @@ export default async function NewCaseStudyPage() {
     .order("name");
 
   return (
-    <div className="max-w-2xl space-y-6 p-6 md:p-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-accent">
-            Nouvelle etude de cas
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Cree un brouillon : tu completeras les details ensuite.
-          </p>
-        </div>
-        <Link
-          href="/admin/case-studies"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          Annuler
-        </Link>
-      </div>
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-6 md:p-10">
+      <PageHeader
+        breadcrumbs={[
+          { href: "/admin/case-studies", label: "Études de cas" },
+          { href: "/admin/case-studies/new", label: "Nouvelle" },
+        ]}
+        title="Nouvelle étude de cas"
+        description="On crée un brouillon minimaliste. Tu complèteras la stratégie, les résultats et les médias juste après."
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Informations de base</CardTitle>
-          <CardDescription>
-            Donne un nom. Tu pourras ajouter la strategie, les resultats et les
-            medias sur la page d&apos;edition.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <NewCaseStudyForm sectors={sectors ?? []} />
-        </CardContent>
-      </Card>
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs md:p-8">
+        <NewCaseStudyForm sectors={sectors ?? []} />
+      </div>
     </div>
   );
 }

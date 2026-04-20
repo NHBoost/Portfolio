@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  BookOpen,
+  ClipboardList,
+  LineChart,
+  Rocket,
+  Sparkles,
+  Target,
+  Trophy,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,11 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import type { Database } from "@/types/database";
+import { cn } from "@/lib/utils";
+import { formatCurrency, formatRoi } from "@/lib/format";
 import { updateCaseStudyAction } from "../actions";
 
 type CaseStudy = Database["public"]["Tables"]["case_studies"]["Row"];
+type Status = CaseStudy["status"];
 
 const NONE = "__none__";
 
@@ -36,23 +41,103 @@ type Props = {
   selectedServiceIds: string[];
 };
 
-function Section({
-  title,
-  description,
-  children,
-}: {
+type SectionDef = {
+  number: string;
+  id: string;
   title: string;
   description?: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const sections: SectionDef[] = [
+  {
+    number: "01",
+    id: "general",
+    title: "Informations générales",
+    description: "Contexte client, slug public, assets visuels clés.",
+    icon: BookOpen,
+  },
+  {
+    number: "02",
+    id: "presentation",
+    title: "Présentation initiale",
+    description: "Situation de départ, problème, objectif business.",
+    icon: ClipboardList,
+  },
+  {
+    number: "03",
+    id: "strategy",
+    title: "Stratégie",
+    description: "Angle, positionnement, offre, tunnel, ciblage.",
+    icon: Target,
+  },
+  {
+    number: "04",
+    id: "execution",
+    title: "Exécution",
+    description: "Ce qui a été livré concrètement sur le terrain.",
+    icon: Rocket,
+  },
+  {
+    number: "05",
+    id: "results",
+    title: "Résultats & ROI",
+    description: "Chiffres clés de la campagne, calcul de ROI en temps réel.",
+    icon: Trophy,
+  },
+  {
+    number: "06",
+    id: "before-after",
+    title: "Avant / Après",
+    description: "Transformation concrète vécue par le client.",
+    icon: LineChart,
+  },
+  {
+    number: "07",
+    id: "conclusion",
+    title: "Conclusion",
+    description: "Impact business final et témoignage pour le closing.",
+    icon: Sparkles,
+  },
+];
+
+function Section({
+  section,
+  children,
+}: {
+  section: SectionDef;
   children: React.ReactNode;
 }) {
+  const Icon = section.icon;
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{title}</CardTitle>
-        {description ? <CardDescription>{description}</CardDescription> : null}
-      </CardHeader>
-      <CardContent className="space-y-4">{children}</CardContent>
-    </Card>
+    <section
+      id={section.id}
+      aria-labelledby={`${section.id}-title`}
+      className="scroll-mt-24 rounded-2xl border border-border bg-card shadow-xs"
+    >
+      <header className="flex items-start gap-4 border-b border-border/70 px-6 py-5">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand-deep">
+          <Icon className="h-4 w-4" />
+        </span>
+        <div className="flex flex-col">
+          <p className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-deep">
+            Section {section.number}
+          </p>
+          <h2
+            id={`${section.id}-title`}
+            className="font-display text-lg font-semibold tracking-tight text-foreground"
+          >
+            {section.title}
+          </h2>
+          {section.description ? (
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {section.description}
+            </p>
+          ) : null}
+        </div>
+      </header>
+      <div className="space-y-5 px-6 py-6">{children}</div>
+    </section>
   );
 }
 
@@ -61,78 +146,50 @@ function Field({
   name,
   children,
   hint,
+  className,
 }: {
   label: string;
   name: string;
   children: React.ReactNode;
   hint?: string;
+  className?: string;
 }) {
   return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
+    <div className={cn("space-y-1.5", className)}>
+      <Label htmlFor={name} className="text-xs font-medium">
+        {label}
+      </Label>
       {children}
-      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="text-xs text-muted-foreground/80">{hint}</p>
+      ) : null}
     </div>
   );
 }
 
-function TextInput({
-  name,
-  defaultValue,
-  placeholder,
-}: {
-  name: string;
-  defaultValue?: string | null;
-  placeholder?: string;
-}) {
-  return (
-    <Input
-      id={name}
-      name={name}
-      defaultValue={defaultValue ?? ""}
-      placeholder={placeholder}
-    />
-  );
+function numberValue(v: string) {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
-function NumberInput({
-  name,
-  defaultValue,
-  step = "any",
-}: {
-  name: string;
-  defaultValue?: number | null;
-  step?: string;
-}) {
-  return (
-    <Input
-      id={name}
-      name={name}
-      type="number"
-      step={step}
-      defaultValue={defaultValue ?? ""}
-    />
-  );
-}
-
-function TextareaInput({
-  name,
-  defaultValue,
-  rows = 3,
-}: {
-  name: string;
-  defaultValue?: string | null;
-  rows?: number;
-}) {
-  return (
-    <Textarea
-      id={name}
-      name={name}
-      rows={rows}
-      defaultValue={defaultValue ?? ""}
-    />
-  );
-}
+const statusMeta: Record<Status, { label: string; dot: string; text: string }> =
+  {
+    published: {
+      label: "Publiée",
+      dot: "bg-emerald-500",
+      text: "text-emerald-700",
+    },
+    draft: {
+      label: "Brouillon",
+      dot: "bg-amber-400",
+      text: "text-amber-700",
+    },
+    archived: {
+      label: "Archivée",
+      dot: "bg-muted-foreground/50",
+      text: "text-muted-foreground",
+    },
+  };
 
 export function CaseStudyEditForm({
   caseStudy,
@@ -145,10 +202,28 @@ export function CaseStudyEditForm({
   const [sectorId, setSectorId] = useState<string>(
     caseStudy.sector_id ?? NONE,
   );
-  const [status, setStatus] = useState<CaseStudy["status"]>(caseStudy.status);
+  const [status, setStatus] = useState<Status>(caseStudy.status);
   const [selectedServices, setSelectedServices] = useState<Set<string>>(
     new Set(selectedServiceIds),
   );
+
+  // Live ROI calculation state
+  const [adBudget, setAdBudget] = useState<string>(
+    String(caseStudy.ad_budget ?? ""),
+  );
+  const [revenue, setRevenue] = useState<string>(
+    String(caseStudy.revenue_generated ?? ""),
+  );
+  const [roiOverride, setRoiOverride] = useState<string>(
+    String(caseStudy.roi ?? ""),
+  );
+
+  const liveRoi = useMemo(() => {
+    const b = numberValue(adBudget);
+    const r = numberValue(revenue);
+    if (b <= 0 || r <= 0) return null;
+    return r / b;
+  }, [adBudget, revenue]);
 
   function toggleService(id: string) {
     setSelectedServices((prev) => {
@@ -164,65 +239,100 @@ export function CaseStudyEditForm({
     const fd = new FormData(event.currentTarget);
     fd.set("sector_id", sectorId === NONE ? "" : sectorId);
     fd.set("status", status);
+    // If user didn't explicitly override ROI, persist the live value
+    if (!fd.get("roi") && liveRoi) {
+      fd.set("roi", liveRoi.toFixed(2));
+    }
     fd.delete("service_ids[]");
     for (const id of selectedServices) fd.append("service_ids[]", id);
 
     startTransition(async () => {
       const result = await updateCaseStudyAction(caseStudy.id, fd);
       if (!result.success) {
-        toast.error(result.error ?? "Echec de la sauvegarde");
+        toast.error(result.error ?? "Échec de la sauvegarde");
         return;
       }
-      toast.success("Etude de cas enregistree");
+      toast.success("Étude de cas enregistrée");
       router.refresh();
     });
   }
 
+  const meta = statusMeta[status];
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex items-center justify-between rounded-lg border bg-card p-4">
+      {/* Sticky action bar */}
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-16 z-20 -mx-6 flex flex-wrap items-center gap-3 border-b border-border bg-background/85 px-6 py-3 backdrop-blur md:-mx-10 md:px-10"
+      >
         <div className="flex items-center gap-3">
-          <Switch
-            id="publish-toggle"
-            checked={status === "published"}
-            onCheckedChange={(checked) =>
-              setStatus(checked ? "published" : "draft")
-            }
-          />
-          <Label htmlFor="publish-toggle" className="cursor-pointer">
-            {status === "published"
-              ? "Publiee"
-              : status === "archived"
-                ? "Archivee"
-                : "Brouillon"}
-          </Label>
-        </div>
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Enregistrement..." : "Enregistrer"}
-        </Button>
-      </div>
-
-      {/* Block 1 — Informations generales */}
-      <Section title="1. Informations generales">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Nom du projet *" name="project_name">
-            <TextInput
-              name="project_name"
-              defaultValue={caseStudy.project_name}
-            />
-          </Field>
-          <Field
-            label="Slug *"
-            name="slug"
-            hint="Utilise dans l'URL publique."
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 text-xs font-medium",
+              meta.text,
+            )}
           >
-            <TextInput name="slug" defaultValue={caseStudy.slug} />
+            <span aria-hidden className={cn("h-1.5 w-1.5 rounded-full", meta.dot)} />
+            {meta.label}
+          </span>
+          {liveRoi ? (
+            <span className="hidden text-xs text-muted-foreground md:inline-flex">
+              ROI calculé : <span className="ml-1 font-display font-semibold text-brand-deep">{formatRoi(liveRoi)}</span>
+            </span>
+          ) : null}
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <Select
+            value={status}
+            onValueChange={(v) => v && setStatus(v as Status)}
+          >
+            <SelectTrigger className="h-8 w-36 bg-card text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="draft">Brouillon</SelectItem>
+              <SelectItem value="published">Publiée</SelectItem>
+              <SelectItem value="archived">Archivée</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button type="submit" disabled={isPending} size="sm">
+            {isPending ? "Sauvegarde..." : "Enregistrer"}
+          </Button>
+        </div>
+      </motion.div>
+
+      {/* Section anchors */}
+      <nav
+        aria-label="Navigation des sections"
+        className="hidden flex-wrap gap-1.5 lg:flex"
+      >
+        {sections.map((s) => (
+          <a
+            key={s.id}
+            href={`#${s.id}`}
+            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand-deep"
+          >
+            <span className="font-display text-[10px] font-semibold text-muted-foreground/70 group-hover:text-brand-deep">
+              {s.number}
+            </span>
+            <span>{s.title}</span>
+          </a>
+        ))}
+      </nav>
+
+      <Section section={sections[0]}>
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Nom du projet" name="project_name">
+            <Input name="project_name" defaultValue={caseStudy.project_name} />
+          </Field>
+          <Field label="Slug" name="slug" hint="Utilisé dans l'URL publique.">
+            <Input name="slug" defaultValue={caseStudy.slug} />
           </Field>
           <Field label="Client" name="client_name">
-            <TextInput
-              name="client_name"
-              defaultValue={caseStudy.client_name}
-            />
+            <Input name="client_name" defaultValue={caseStudy.client_name ?? ""} />
           </Field>
           <Field label="Secteur" name="sector_id">
             <Select
@@ -247,22 +357,22 @@ export function CaseStudyEditForm({
             </Select>
           </Field>
           <Field label="Cover image URL" name="cover_image_url">
-            <TextInput
+            <Input
               name="cover_image_url"
-              defaultValue={caseStudy.cover_image_url}
+              defaultValue={caseStudy.cover_image_url ?? ""}
               placeholder="https://..."
             />
           </Field>
           <Field label="Logo client URL" name="client_logo_url">
-            <TextInput
+            <Input
               name="client_logo_url"
-              defaultValue={caseStudy.client_logo_url}
+              defaultValue={caseStudy.client_logo_url ?? ""}
               placeholder="https://..."
             />
           </Field>
         </div>
-        <Field label="Services associes" name="service_ids">
-          <div className="flex flex-wrap gap-2">
+        <Field label="Services associés" name="service_ids">
+          <div className="flex flex-wrap gap-1.5">
             {services.map((s) => {
               const active = selectedServices.has(s.id);
               return (
@@ -270,12 +380,13 @@ export function CaseStudyEditForm({
                   key={s.id}
                   type="button"
                   onClick={() => toggleService(s.id)}
-                  className={
-                    "rounded-full border px-3 py-1 text-xs transition-colors " +
-                    (active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-muted-foreground hover:bg-muted")
-                  }
+                  aria-pressed={active}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs transition-all",
+                    active
+                      ? "border-brand bg-brand text-white shadow-sm"
+                      : "border-border bg-card text-muted-foreground hover:border-brand/40 hover:text-brand-deep",
+                  )}
                 >
                   {s.name}
                 </button>
@@ -285,211 +396,249 @@ export function CaseStudyEditForm({
         </Field>
       </Section>
 
-      {/* Block 2 — Presentation initiale */}
-      <Section
-        title="2. Presentation initiale"
-        description="Situation du client, probleme, objectif business."
-      >
+      <Section section={sections[1]}>
         <Field label="Situation initiale" name="initial_situation">
-          <TextareaInput
+          <Textarea
             name="initial_situation"
-            defaultValue={caseStudy.initial_situation}
+            rows={3}
+            defaultValue={caseStudy.initial_situation ?? ""}
           />
         </Field>
         <Field
-          label="Probleme cle (court, accroche)"
+          label="Problème clé (court, accroche)"
           name="short_problem"
         >
-          <TextareaInput
+          <Textarea
             name="short_problem"
-            defaultValue={caseStudy.short_problem}
             rows={2}
+            defaultValue={caseStudy.short_problem ?? ""}
           />
         </Field>
         <Field label="Objectif business" name="business_goal">
-          <TextareaInput
+          <Textarea
             name="business_goal"
-            defaultValue={caseStudy.business_goal}
+            rows={3}
+            defaultValue={caseStudy.business_goal ?? ""}
           />
         </Field>
       </Section>
 
-      {/* Block 3 — Strategie */}
-      <Section
-        title="3. Strategie"
-        description="Section cle. Angle, positionnement, offre, tunnel, ciblage."
-      >
-        <div className="grid gap-4 md:grid-cols-2">
+      <Section section={sections[2]}>
+        <div className="grid gap-5 md:grid-cols-2">
           <Field label="Angle marketing" name="strategy_angle">
-            <TextareaInput
+            <Textarea
               name="strategy_angle"
-              defaultValue={caseStudy.strategy_angle}
+              rows={3}
+              defaultValue={caseStudy.strategy_angle ?? ""}
             />
           </Field>
           <Field label="Positionnement" name="positioning">
-            <TextareaInput
+            <Textarea
               name="positioning"
-              defaultValue={caseStudy.positioning}
+              rows={3}
+              defaultValue={caseStudy.positioning ?? ""}
             />
           </Field>
-          <Field label="Offre proposee" name="offer_details">
-            <TextareaInput
+          <Field label="Offre proposée" name="offer_details">
+            <Textarea
               name="offer_details"
-              defaultValue={caseStudy.offer_details}
+              rows={3}
+              defaultValue={caseStudy.offer_details ?? ""}
             />
           </Field>
           <Field label="Tunnel de conversion" name="funnel_details">
-            <TextareaInput
+            <Textarea
               name="funnel_details"
-              defaultValue={caseStudy.funnel_details}
+              rows={3}
+              defaultValue={caseStudy.funnel_details ?? ""}
             />
           </Field>
         </div>
         <Field label="Ciblage" name="targeting_details">
-          <TextareaInput
+          <Textarea
             name="targeting_details"
-            defaultValue={caseStudy.targeting_details}
+            rows={3}
+            defaultValue={caseStudy.targeting_details ?? ""}
           />
         </Field>
       </Section>
 
-      {/* Block 4 — Execution */}
-      <Section
-        title="4. Execution"
-        description="Ce qui a ete realise concretement : pubs, contenus, pages."
-      >
-        <Field label="Details d'execution" name="execution_details">
-          <TextareaInput
+      <Section section={sections[3]}>
+        <Field label="Détails d'exécution" name="execution_details">
+          <Textarea
             name="execution_details"
-            defaultValue={caseStudy.execution_details}
             rows={5}
+            defaultValue={caseStudy.execution_details ?? ""}
           />
         </Field>
       </Section>
 
-      {/* Block 5 — Resultats */}
-      <Section
-        title="5. Resultats"
-        description="Chiffres cles mesures. Utilises dans le bloc ROI du site."
-      >
-        <div className="grid gap-4 md:grid-cols-3">
+      <Section section={sections[4]}>
+        {/* Live ROI preview */}
+        <div className="grid gap-3 rounded-xl border border-border bg-surface-muted/70 p-5 md:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Retour sur investissement
+            </p>
+            <p className="mt-1 flex items-baseline gap-1 font-display font-black leading-none tracking-tight text-accent">
+              <span className="text-3xl">×</span>
+              <span className="text-[56px] tabular-nums">
+                {liveRoi ? liveRoi.toFixed(1) : "—"}
+              </span>
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Calculé automatiquement à partir du CA et du budget saisis.
+              {roiOverride && Number(roiOverride) > 0
+                ? " Une valeur manuelle a été renseignée, elle prévaut."
+                : ""}
+            </p>
+          </div>
+          <dl className="grid grid-cols-2 gap-4 self-center text-sm md:self-end md:text-right">
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                Budget ads
+              </dt>
+              <dd className="font-display text-lg font-semibold tabular-nums text-foreground">
+                {formatCurrency(adBudget)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                CA généré
+              </dt>
+              <dd className="font-display text-lg font-semibold tabular-nums text-foreground">
+                {formatCurrency(revenue)}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
           <Field label="Nombre de leads" name="leads_count">
-            <NumberInput
+            <Input
               name="leads_count"
-              defaultValue={caseStudy.leads_count}
+              type="number"
               step="1"
+              defaultValue={caseStudy.leads_count ?? ""}
             />
           </Field>
-          <Field label="Cout par lead (EUR)" name="cost_per_lead">
-            <NumberInput
+          <Field label="Coût par lead (€)" name="cost_per_lead">
+            <Input
               name="cost_per_lead"
-              defaultValue={caseStudy.cost_per_lead}
+              type="number"
+              step="any"
+              defaultValue={caseStudy.cost_per_lead ?? ""}
             />
           </Field>
-          <Field label="Clients generes" name="clients_count">
-            <NumberInput
+          <Field label="Clients générés" name="clients_count">
+            <Input
               name="clients_count"
-              defaultValue={caseStudy.clients_count}
+              type="number"
               step="1"
+              defaultValue={caseStudy.clients_count ?? ""}
             />
           </Field>
-          <Field label="Budget ads (EUR)" name="ad_budget">
-            <NumberInput
+          <Field label="Budget ads (€)" name="ad_budget">
+            <Input
               name="ad_budget"
-              defaultValue={caseStudy.ad_budget}
+              type="number"
+              step="any"
+              value={adBudget}
+              onChange={(e) => setAdBudget(e.target.value)}
             />
           </Field>
-          <Field label="CA genere (EUR)" name="revenue_generated">
-            <NumberInput
+          <Field label="CA généré (€)" name="revenue_generated">
+            <Input
               name="revenue_generated"
-              defaultValue={caseStudy.revenue_generated}
+              type="number"
+              step="any"
+              value={revenue}
+              onChange={(e) => setRevenue(e.target.value)}
             />
           </Field>
           <Field label="ROAS" name="roas">
-            <NumberInput name="roas" defaultValue={caseStudy.roas} />
+            <Input
+              name="roas"
+              type="number"
+              step="any"
+              defaultValue={caseStudy.roas ?? ""}
+            />
           </Field>
           <Field
-            label="ROI (x)"
+            label="ROI manuel (facultatif)"
             name="roi"
-            hint="Ex: 8.5 pour x8.5"
+            hint="Laisser vide pour utiliser la valeur calculée."
+            className="md:col-span-3"
           >
-            <NumberInput name="roi" defaultValue={caseStudy.roi} />
+            <Input
+              name="roi"
+              type="number"
+              step="any"
+              value={roiOverride}
+              onChange={(e) => setRoiOverride(e.target.value)}
+              placeholder={liveRoi ? liveRoi.toFixed(2) : "Ex: 8.5"}
+            />
           </Field>
         </div>
       </Section>
 
-      {/* Block 6 — Avant / Apres */}
-      <Section
-        title="6. Avant / Apres"
-        description="Transformation concrete vue par le client."
-      >
-        <div className="grid gap-4 md:grid-cols-2">
+      <Section section={sections[5]}>
+        <div className="grid gap-5 md:grid-cols-2">
           <Field label="Trafic avant" name="traffic_before">
-            <TextInput
+            <Input
               name="traffic_before"
-              defaultValue={caseStudy.traffic_before}
+              defaultValue={caseStudy.traffic_before ?? ""}
             />
           </Field>
-          <Field label="Trafic apres" name="traffic_after">
-            <TextInput
+          <Field label="Trafic après" name="traffic_after">
+            <Input
               name="traffic_after"
-              defaultValue={caseStudy.traffic_after}
+              defaultValue={caseStudy.traffic_after ?? ""}
             />
           </Field>
           <Field label="CA avant" name="revenue_before">
-            <TextInput
+            <Input
               name="revenue_before"
-              defaultValue={caseStudy.revenue_before}
+              defaultValue={caseStudy.revenue_before ?? ""}
             />
           </Field>
-          <Field label="CA apres" name="revenue_after">
-            <TextInput
+          <Field label="CA après" name="revenue_after">
+            <Input
               name="revenue_after"
-              defaultValue={caseStudy.revenue_after}
+              defaultValue={caseStudy.revenue_after ?? ""}
             />
           </Field>
-          <Field label="Visibilite avant" name="visibility_before">
-            <TextInput
+          <Field label="Visibilité avant" name="visibility_before">
+            <Input
               name="visibility_before"
-              defaultValue={caseStudy.visibility_before}
+              defaultValue={caseStudy.visibility_before ?? ""}
             />
           </Field>
-          <Field label="Visibilite apres" name="visibility_after">
-            <TextInput
+          <Field label="Visibilité après" name="visibility_after">
+            <Input
               name="visibility_after"
-              defaultValue={caseStudy.visibility_after}
+              defaultValue={caseStudy.visibility_after ?? ""}
             />
           </Field>
         </div>
       </Section>
 
-      {/* Block 9 — Conclusion */}
-      <Section
-        title="9. Conclusion"
-        description="Impact business final et temoignage client pour le closing."
-      >
+      <Section section={sections[6]}>
         <Field label="Conclusion / impact" name="conclusion">
-          <TextareaInput
+          <Textarea
             name="conclusion"
-            defaultValue={caseStudy.conclusion}
+            rows={4}
+            defaultValue={caseStudy.conclusion ?? ""}
           />
         </Field>
-        <Field label="Temoignage client" name="testimonial">
-          <TextareaInput
+        <Field label="Témoignage client" name="testimonial">
+          <Textarea
             name="testimonial"
-            defaultValue={caseStudy.testimonial}
+            rows={3}
+            defaultValue={caseStudy.testimonial ?? ""}
           />
         </Field>
       </Section>
-
-      <div className="sticky bottom-4 flex items-center justify-end gap-2 rounded-lg border bg-card/95 p-3 shadow-lg backdrop-blur">
-        <span className="text-xs text-muted-foreground">
-          Les medias et preuves s&apos;enregistrent automatiquement.
-        </span>
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Enregistrement..." : "Enregistrer"}
-        </Button>
-      </div>
     </form>
   );
 }

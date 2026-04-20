@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/admin/page-header";
 import { TagManager } from "@/components/admin/tag-manager";
 import {
   createSectorAction,
@@ -14,16 +15,12 @@ export default async function SectorsPage() {
     .order("name");
 
   return (
-    <div className="space-y-6 p-6 md:p-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-accent">
-          Secteurs
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Categories d&apos;activites utilisees pour classer les etudes de cas.
-        </p>
-      </div>
-
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-6 md:p-10">
+      <PageHeader
+        eyebrow="Bibliothèque"
+        title="Secteurs"
+        description="Catégories d'activités utilisées pour taguer et filtrer les études de cas."
+      />
       <TagManager
         items={sectors ?? []}
         onCreate={createSectorAction}
