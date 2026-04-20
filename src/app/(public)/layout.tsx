@@ -12,7 +12,9 @@ export default async function PublicLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar settings={settings} />
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
       <Footer settings={settings} />
     </div>
   );

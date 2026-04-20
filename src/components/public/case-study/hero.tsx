@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -133,12 +134,16 @@ export function CaseHero({
           className="mt-12"
         >
           {study.cover_image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={study.cover_image_url}
-              alt={`Cover ${study.project_name}`}
-              className="aspect-[16/7] w-full rounded-3xl border border-border object-cover shadow-sm"
-            />
+            <div className="relative aspect-[16/7] w-full overflow-hidden rounded-3xl border border-border shadow-sm">
+              <Image
+                src={study.cover_image_url}
+                alt={`Cover ${study.project_name}`}
+                fill
+                priority
+                sizes="(min-width: 1280px) 1152px, (min-width: 768px) 92vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           ) : (
             <div
               aria-hidden

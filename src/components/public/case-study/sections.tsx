@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Camera,
@@ -350,12 +351,15 @@ export function ExecutionSection({
                   controls
                 />
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={m.file_url}
-                  alt={m.title ?? ""}
-                  className="aspect-[3/4] h-full w-full object-cover"
-                />
+                <div className="relative aspect-[3/4] w-full">
+                  <Image
+                    src={m.file_url}
+                    alt={m.title ?? `Media ${m.media_type}`}
+                    fill
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
               )}
               {m.title ? (
                 <figcaption className="border-t border-border bg-card px-3 py-2 text-[11px] text-muted-foreground">
@@ -472,12 +476,15 @@ export function ResultsSection({
               className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-2"
             >
               {p.file_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={p.file_url}
-                  alt={p.title ?? ""}
-                  className="aspect-video w-full rounded-xl object-cover"
-                />
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                  <Image
+                    src={p.file_url}
+                    alt={p.title ?? `Preuve ${p.proof_type}`}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
               ) : null}
               <figcaption className="px-3 pb-2 pt-3">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">

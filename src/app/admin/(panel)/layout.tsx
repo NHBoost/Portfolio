@@ -15,7 +15,10 @@ export default async function AdminPanelLayout({
       <AdminSidebar />
       <div className="flex min-h-screen flex-1 flex-col">
         <AdminHeader profile={profile} />
-        <main className="flex-1 overflow-y-auto bg-surface-muted/50">
+        <main
+          id="main-content"
+          className="flex-1 overflow-y-auto bg-surface-muted/50"
+        >
           {children}
         </main>
       </div>

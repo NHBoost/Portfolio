@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import type { RealisationMedia } from "@/lib/public-data";
 import { cn } from "@/lib/utils";
@@ -10,6 +12,46 @@ const ease: [number, number, number, number] = [0.2, 0.8, 0.2, 1];
 
 function isVideo(m: RealisationMedia) {
   return m.media_type === "video" || m.media_type === "ugc";
+}
+
+function LazyVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const v = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            v.play().catch(() => {
+              /* ignore */
+            });
+          } else {
+            v.pause();
+          }
+        }
+      },
+      { rootMargin: "120px", threshold: 0.25 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+    />
+  );
 }
 
 export function RealisationsGallery({ items }: { items: RealisationMedia[] }) {
@@ -70,20 +112,15 @@ export function RealisationsGallery({ items }: { items: RealisationMedia[] }) {
                   className="block h-full w-full"
                 >
                   {isVideo(m) ? (
-                    <video
-                      src={m.file_url}
-                      muted
-                      loop
-                      playsInline
-                      autoPlay
-                      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                    />
+                    <LazyVideo src={m.file_url} />
                   ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={m.file_url}
-                      alt=""
-                      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                      alt={`Réalisation ${m.case_name}`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                      loading="lazy"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                     />
                   )}
                   <div

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -58,11 +59,16 @@ export function CaseStudyCard({
           )}
         >
           {data.cover_image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={data.cover_image_url}
-              alt=""
-              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              alt={`Cover ${data.project_name}`}
+              fill
+              sizes={
+                isFeature
+                  ? "(min-width: 1024px) 740px, (min-width: 768px) 66vw, 100vw"
+                  : "(min-width: 1024px) 360px, (min-width: 768px) 33vw, 100vw"
+              }
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />
           ) : (
             <div

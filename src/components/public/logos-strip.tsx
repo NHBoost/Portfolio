@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { TrustEntry } from "@/lib/public-data";
@@ -54,11 +55,12 @@ export function LogosStrip({ items }: { items: TrustEntry[] }) {
                 )}
               >
                 {entry.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={entry.logo_url}
                     alt={entry.client_name}
-                    className="h-7 max-w-[140px] object-contain opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0 md:h-9"
+                    width={140}
+                    height={36}
+                    className="h-7 w-auto max-w-[140px] object-contain opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0 md:h-9"
                   />
                 ) : (
                   <span className="font-display text-[15px] font-semibold tracking-tight text-muted-foreground/80 transition-colors duration-300 group-hover:text-foreground md:text-base">
