@@ -123,7 +123,7 @@ export function Hero({
             </motion.h1>
             <motion.p
               variants={item}
-              className="max-w-xl text-pretty text-[15px] leading-relaxed text-muted-foreground md:text-[17px] md:leading-[1.55]"
+              className="!mt-4 max-w-xl text-pretty text-[15px] leading-relaxed text-muted-foreground md:text-[17px] md:leading-[1.55]"
             >
               Ce portfolio ne raconte pas ce que nous faisons. Il prouve
               combien ça rapporte à nos clients — en leads, en clients, en
