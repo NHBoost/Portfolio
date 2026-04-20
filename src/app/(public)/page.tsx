@@ -1,9 +1,16 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getFranchiseSettings, getGlobalStats } from "@/lib/public-data";
+import {
+  getFranchiseSettings,
+  getGlobalStats,
+  getRealisations,
+  getServices,
+} from "@/lib/public-data";
 import { Hero } from "@/components/public/hero";
 import { GlobalStatsBand } from "@/components/public/global-stats-band";
 import { FinalCta } from "@/components/public/final-cta";
 import { CaseStudiesSection } from "@/components/public/case-studies-section";
+import { RealisationsGallery } from "@/components/public/realisations-gallery";
+import { ServicesGrid } from "@/components/public/services-grid";
 import type { CaseStudyCardData } from "@/components/public/case-study-card";
 
 export const revalidate = 60;
@@ -62,18 +69,23 @@ async function getTopCaseStudies(): Promise<CaseStudyCardData[]> {
 }
 
 export default async function HomePage() {
-  const [settings, stats, spotlight, topStudies] = await Promise.all([
-    getFranchiseSettings(),
-    getGlobalStats(),
-    getSpotlight(),
-    getTopCaseStudies(),
-  ]);
+  const [settings, stats, spotlight, topStudies, realisations, services] =
+    await Promise.all([
+      getFranchiseSettings(),
+      getGlobalStats(),
+      getSpotlight(),
+      getTopCaseStudies(),
+      getRealisations(12),
+      getServices(),
+    ]);
 
   return (
     <>
       <Hero settings={settings} spotlight={spotlight} />
       <GlobalStatsBand stats={stats} />
       <CaseStudiesSection items={topStudies} />
+      <RealisationsGallery items={realisations} />
+      <ServicesGrid items={services} />
       <FinalCta settings={settings} />
     </>
   );
