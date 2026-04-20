@@ -1,12 +1,17 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
+  getFeaturedTestimonial,
   getFranchiseSettings,
   getGlobalStats,
   getRealisations,
   getServices,
+  getTrustLogos,
 } from "@/lib/public-data";
-import { Hero } from "@/components/public/hero";
+import { Hero, type HeroTrustStats } from "@/components/public/hero";
+import { LogosStrip } from "@/components/public/logos-strip";
 import { GlobalStatsBand } from "@/components/public/global-stats-band";
+import { ProcessSection } from "@/components/public/process-section";
+import { FeaturedTestimonial } from "@/components/public/featured-testimonial";
 import { FinalCta } from "@/components/public/final-cta";
 import { CaseStudiesSection } from "@/components/public/case-studies-section";
 import { RealisationsGallery } from "@/components/public/realisations-gallery";
@@ -68,24 +73,58 @@ async function getTopCaseStudies(): Promise<CaseStudyCardData[]> {
   }));
 }
 
+async function getPublishedCount(): Promise<number> {
+  const supabase = await createSupabaseServerClient();
+  const { count } = await supabase
+    .from("case_studies")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published");
+  return count ?? 0;
+}
+
 export default async function HomePage() {
-  const [settings, stats, spotlight, topStudies, realisations, services] =
-    await Promise.all([
-      getFranchiseSettings(),
-      getGlobalStats(),
-      getSpotlight(),
-      getTopCaseStudies(),
-      getRealisations(12),
-      getServices(),
-    ]);
+  const [
+    settings,
+    stats,
+    spotlight,
+    topStudies,
+    realisations,
+    services,
+    logos,
+    testimonial,
+    publishedCount,
+  ] = await Promise.all([
+    getFranchiseSettings(),
+    getGlobalStats(),
+    getSpotlight(),
+    getTopCaseStudies(),
+    getRealisations(12),
+    getServices(),
+    getTrustLogos(8),
+    getFeaturedTestimonial(),
+    getPublishedCount(),
+  ]);
+
+  const trustStats: HeroTrustStats = {
+    publishedCount,
+    averageRoas: stats?.average_roas ? Number(stats.average_roas) : null,
+    totalRevenue: stats?.total_revenue ? Number(stats.total_revenue) : null,
+  };
 
   return (
     <>
-      <Hero settings={settings} spotlight={spotlight} />
+      <Hero
+        settings={settings}
+        spotlight={spotlight}
+        trustStats={trustStats}
+      />
+      <LogosStrip items={logos} />
       <GlobalStatsBand stats={stats} />
+      <ProcessSection />
       <CaseStudiesSection items={topStudies} />
-      <RealisationsGallery items={realisations} />
+      <FeaturedTestimonial entry={testimonial} />
       <ServicesGrid items={services} />
+      <RealisationsGallery items={realisations} />
       <FinalCta settings={settings} />
     </>
   );

@@ -78,3 +78,62 @@ export async function getServices(): Promise<ServiceRow[]> {
     .order("name");
   return data ?? [];
 }
+
+export type TrustEntry = {
+  slug: string;
+  client_name: string;
+  logo_url: string | null;
+};
+
+export async function getTrustLogos(limit = 10): Promise<TrustEntry[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("case_studies")
+    .select("slug, client_name, client_logo_url")
+    .eq("status", "published")
+    .not("client_name", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  return (data ?? [])
+    .filter((row) => row.client_name)
+    .map((row) => ({
+      slug: row.slug,
+      client_name: row.client_name as string,
+      logo_url: row.client_logo_url,
+    }));
+}
+
+export type FeaturedTestimonialEntry = {
+  slug: string;
+  project_name: string;
+  client_name: string | null;
+  sector: string | null;
+  testimonial: string;
+  roi: number | null;
+};
+
+export async function getFeaturedTestimonial(): Promise<FeaturedTestimonialEntry | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("case_studies")
+    .select(
+      "slug, project_name, client_name, testimonial, roi, sector:sectors(name)",
+    )
+    .eq("status", "published")
+    .not("testimonial", "is", null)
+    .order("roi", { ascending: false, nullsFirst: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!data || !data.testimonial) return null;
+
+  return {
+    slug: data.slug,
+    project_name: data.project_name,
+    client_name: data.client_name,
+    sector: data.sector?.name ?? null,
+    testimonial: data.testimonial,
+    roi: data.roi ? Number(data.roi) : null,
+  };
+}
