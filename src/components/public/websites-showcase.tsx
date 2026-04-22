@@ -186,9 +186,11 @@ function PhoneMockup({ site, index }: { site: ShowcaseSite; index: number }) {
                   sandbox="allow-scripts allow-same-origin"
                   className="pointer-events-none block border-0"
                   style={{
-                    width: "1280px",
-                    height: "2600px",
-                    transform: "scale(0.2125)",
+                    // Rendu en viewport mobile 400px puis scale pour remplir
+                    // la largeur utile de l'écran du mockup (~260px)
+                    width: "400px",
+                    height: "2400px",
+                    transform: "scale(0.65)",
                     transformOrigin: "top left",
                   }}
                 />
