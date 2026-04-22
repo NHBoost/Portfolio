@@ -2,6 +2,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CaseStudyCardData } from "@/components/public/case-study-card";
 import { CaseStudiesFilters } from "@/components/public/case-studies-filters";
 import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
+import { WebsitesShowcase } from "@/components/public/websites-showcase";
+import { getWebsites } from "@/lib/public-data";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -27,9 +29,10 @@ export default async function CaseStudiesListPublicPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: sectors }, { data: services }] = await Promise.all([
+  const [{ data: sectors }, { data: services }, websites] = await Promise.all([
     supabase.from("sectors").select("slug, name").order("name"),
     supabase.from("services").select("slug, name").order("name"),
+    getWebsites(),
   ]);
 
   // Resolve sector slug → id for filtering
@@ -169,6 +172,17 @@ export default async function CaseStudiesListPublicPage({
           </div>
         </div>
       </section>
+
+      {websites.length > 0 ? (
+        <WebsitesShowcase
+          sites={websites.map((w) => ({
+            url: w.url,
+            title: w.title,
+            sector: w.activity,
+            caseSlug: w.caseSlug,
+          }))}
+        />
+      ) : null}
     </>
   );
 }
