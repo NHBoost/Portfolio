@@ -15,6 +15,10 @@ import { FeaturedTestimonial } from "@/components/public/featured-testimonial";
 import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
 import { RealisationsGallery } from "@/components/public/realisations-gallery";
 import { ServicesGrid } from "@/components/public/services-grid";
+import {
+  WebsitesShowcase,
+  type ShowcaseSite,
+} from "@/components/public/websites-showcase";
 import type { CaseStudyCardData } from "@/components/public/case-study-card";
 
 export const revalidate = 60;
@@ -81,6 +85,29 @@ async function getPublishedCount(): Promise<number> {
   return count ?? 0;
 }
 
+// Sites livrés aux clients — à remplacer par les vraies URLs.
+// Liés aux études de cas existantes via leur slug.
+const deliveredWebsites: ShowcaseSite[] = [
+  {
+    url: "https://example.com",
+    title: "Horizon Immobilier",
+    sector: "Immobilier",
+    caseSlug: "horizon-immobilier-lancement",
+  },
+  {
+    url: "https://info.cern.ch/",
+    title: "Clinique Lumière",
+    sector: "Beauté",
+    caseSlug: "clinique-lumiere-beaute",
+  },
+  {
+    url: "https://example.org/",
+    title: "Le Colibri",
+    sector: "Restaurant",
+    caseSlug: "le-colibri-restaurant",
+  },
+];
+
 export default async function HomePage() {
   const [
     settings,
@@ -122,6 +149,7 @@ export default async function HomePage() {
       <ProcessSection />
       <CaseStudiesCarousel items={topStudies} />
       <FeaturedTestimonial entry={testimonial} />
+      <WebsitesShowcase sites={deliveredWebsites} />
       <ServicesGrid items={services} />
       <RealisationsGallery items={realisations} />
     </>
