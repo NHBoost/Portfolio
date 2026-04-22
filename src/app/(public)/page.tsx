@@ -6,6 +6,7 @@ import {
   getRealisations,
   getServices,
   getTrustLogos,
+  getWebsites,
 } from "@/lib/public-data";
 import { Hero, type HeroTrustStats } from "@/components/public/hero";
 import { LogosStrip } from "@/components/public/logos-strip";
@@ -15,10 +16,7 @@ import { FeaturedTestimonial } from "@/components/public/featured-testimonial";
 import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
 import { RealisationsGallery } from "@/components/public/realisations-gallery";
 import { ServicesGrid } from "@/components/public/services-grid";
-import {
-  WebsitesShowcase,
-  type ShowcaseSite,
-} from "@/components/public/websites-showcase";
+import { WebsitesShowcase } from "@/components/public/websites-showcase";
 import type { CaseStudyCardData } from "@/components/public/case-study-card";
 
 export const revalidate = 60;
@@ -85,29 +83,6 @@ async function getPublishedCount(): Promise<number> {
   return count ?? 0;
 }
 
-// Sites livrés aux clients — à remplacer par les vraies URLs.
-// Liés aux études de cas existantes via leur slug.
-const deliveredWebsites: ShowcaseSite[] = [
-  {
-    url: "https://example.com",
-    title: "Horizon Immobilier",
-    sector: "Immobilier",
-    caseSlug: "horizon-immobilier-lancement",
-  },
-  {
-    url: "https://info.cern.ch/",
-    title: "Clinique Lumière",
-    sector: "Beauté",
-    caseSlug: "clinique-lumiere-beaute",
-  },
-  {
-    url: "https://example.org/",
-    title: "Le Colibri",
-    sector: "Restaurant",
-    caseSlug: "le-colibri-restaurant",
-  },
-];
-
 export default async function HomePage() {
   const [
     settings,
@@ -119,6 +94,7 @@ export default async function HomePage() {
     logos,
     testimonial,
     publishedCount,
+    websites,
   ] = await Promise.all([
     getFranchiseSettings(),
     getGlobalStats(),
@@ -129,6 +105,7 @@ export default async function HomePage() {
     getTrustLogos(8),
     getFeaturedTestimonial(),
     getPublishedCount(),
+    getWebsites(),
   ]);
 
   const trustStats: HeroTrustStats = {
@@ -149,7 +126,14 @@ export default async function HomePage() {
       <ProcessSection />
       <CaseStudiesCarousel items={topStudies} />
       <FeaturedTestimonial entry={testimonial} />
-      <WebsitesShowcase sites={deliveredWebsites} />
+      <WebsitesShowcase
+        sites={websites.map((w) => ({
+          url: w.url,
+          title: w.title,
+          sector: w.activity,
+          caseSlug: w.caseSlug,
+        }))}
+      />
       <ServicesGrid items={services} />
       <RealisationsGallery items={realisations} />
     </>

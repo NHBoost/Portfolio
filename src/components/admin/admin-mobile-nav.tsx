@@ -8,6 +8,7 @@ import {
   BarChart3,
   Briefcase,
   ExternalLink,
+  Globe,
   LayoutGrid,
   Menu,
   Palette,
@@ -30,6 +31,7 @@ const groups: { label: string; items: Item[] }[] = [
     items: [
       { href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
       { href: "/admin/case-studies", label: "Études de cas", icon: Briefcase },
+      { href: "/admin/websites", label: "Sites web", icon: Globe },
     ],
   },
   {

@@ -7,6 +7,7 @@ import {
   BarChart3,
   Briefcase,
   ExternalLink,
+  Globe,
   LayoutGrid,
   Palette,
   Tag,
@@ -23,6 +24,7 @@ type Item = {
 const primary: Item[] = [
   { href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
   { href: "/admin/case-studies", label: "Études de cas", icon: Briefcase },
+  { href: "/admin/websites", label: "Sites web", icon: Globe },
 ];
 
 const library: Item[] = [

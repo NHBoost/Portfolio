@@ -113,6 +113,35 @@ export type FeaturedTestimonialEntry = {
   roi: number | null;
 };
 
+export type ShowcaseWebsite = {
+  id: string;
+  url: string;
+  title: string;
+  activity: string | null;
+  caseSlug: string | null;
+};
+
+export async function getWebsites(): Promise<ShowcaseWebsite[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("websites")
+    .select(
+      "id, url, title, activity, sort_order, case_study:case_studies(slug, status)",
+    )
+    .order("sort_order", { ascending: true });
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    url: row.url,
+    title: row.title,
+    activity: row.activity,
+    caseSlug:
+      row.case_study && row.case_study.status === "published"
+        ? row.case_study.slug
+        : null,
+  }));
+}
+
 export async function getFeaturedTestimonial(): Promise<FeaturedTestimonialEntry | null> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
