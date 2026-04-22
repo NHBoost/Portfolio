@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { formatCurrency, formatNumber, formatRoi } from "@/lib/format";
 import type { FranchiseSettings } from "@/lib/public-data";
 
@@ -154,138 +154,81 @@ export function Hero({
             aria-label="Étude de cas à la une"
             className="relative"
           >
-            {spotlight ? (
-              <Link
-                href={`/etudes-de-cas/${spotlight.slug}`}
-                aria-label={`Lire l'étude ${spotlight.project_name}`}
-                className="group relative block overflow-hidden rounded-2xl border border-border bg-card/80 shadow-[0_20px_60px_-20px_rgba(20,25,50,0.22)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_30px_80px_-20px_rgba(20,25,50,0.3)]"
-              >
-                {/* Glow accent */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -top-1/2 right-0 h-[260px] w-[260px] rounded-full opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
-                  style={{
-                    background:
-                      "radial-gradient(circle, oklch(0.65 0.08 235 / 0.3), transparent 70%)",
-                  }}
-                />
-                {/* Subtle grid */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 opacity-[0.04] mesh-grid"
-                />
-
-                <div className="relative space-y-6 p-6 md:p-7">
-                  {/* Header: eyebrow + meta chip */}
-                  <div className="flex items-center justify-between">
-                    <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-deep">
-                      <span
-                        aria-hidden
-                        className="h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_0_3px_rgba(86,148,189,0.2)]"
-                      />
-                      Étude à la une
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-deep opacity-80 transition-all duration-200 group-hover:gap-1.5 group-hover:opacity-100">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-card/80 p-6 shadow-[0_20px_60px_-20px_rgba(20,25,50,0.22)] backdrop-blur md:p-7">
+              <div
+                aria-hidden
+                className="absolute -top-1/2 right-0 h-[260px] w-[260px] rounded-full opacity-50 blur-3xl"
+                style={{
+                  background:
+                    "radial-gradient(circle, oklch(0.65 0.08 235 / 0.22), transparent 70%)",
+                }}
+              />
+              <div className="relative space-y-6">
+                <div className="flex items-center justify-between">
+                  <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-deep">
+                    <span
+                      aria-hidden
+                      className="h-1 w-1 rounded-full bg-brand"
+                    />
+                    Étude à la une
+                  </p>
+                  {spotlight ? (
+                    <Link
+                      href={`/etudes-de-cas/${spotlight.slug}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
                       Lire
-                      <ArrowUpRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  </div>
-
-                  {/* Project identity row */}
-                  <div className="flex items-start gap-3">
-                    <span
-                      aria-hidden
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold tracking-tight text-white ring-1 ring-white/15"
-                      style={{
-                        background:
-                          "radial-gradient(ellipse at top left, oklch(0.65 0.08 235 / 0.5), transparent 60%), linear-gradient(135deg, oklch(0.35 0.08 265), oklch(0.23 0.08 265))",
-                      }}
-                    >
-                      {spotlight.project_name.charAt(0).toUpperCase()}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-[17px] font-semibold tracking-tight text-foreground md:text-lg">
-                        {spotlight.project_name}
-                      </p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-                        {spotlight.sector ? (
-                          <span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                            {spotlight.sector}
-                          </span>
-                        ) : null}
-                        {spotlight.client_name ? (
-                          <span className="truncate">
-                            {spotlight.client_name}
-                          </span>
-                        ) : null}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* ROI hero */}
-                  <div className="relative rounded-xl border border-brand/15 bg-gradient-to-br from-brand/[0.06] via-transparent to-transparent p-4">
-                    <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-deep">
-                      <ShieldCheck className="h-3 w-3 text-emerald-600" />
-                      Retour sur investissement
-                    </p>
-                    <div className="mt-2 flex items-end justify-between gap-4">
-                      <p className="flex items-baseline gap-1.5 font-display font-black leading-[0.85] tracking-[-0.03em] text-accent">
-                        <span className="text-3xl md:text-4xl">×</span>
-                        <span className="text-[68px] tabular-nums md:text-[76px]">
-                          {spotlight.roi ? spotlight.roi.toFixed(1) : "—"}
-                        </span>
-                      </p>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-900/10 dark:text-emerald-400">
-                        <span
-                          aria-hidden
-                          className="h-1 w-1 rounded-full bg-emerald-500"
-                        />
-                        Vérifié
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Budget → CA flow */}
-                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-t border-border/70 pt-5">
-                    <div className="min-w-0">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                        Budget ads
-                      </dt>
-                      <dd className="mt-0.5 truncate font-display text-[15px] font-semibold tabular-nums text-foreground">
-                        {formatCurrency(spotlight.ad_budget ?? 0)}
-                      </dd>
-                    </div>
-                    <span
-                      aria-hidden
-                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background text-brand-deep"
-                    >
-                      <ArrowRight className="h-3 w-3" />
-                    </span>
-                    <div className="min-w-0 text-right">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-brand-deep">
-                        CA généré
-                      </dt>
-                      <dd className="mt-0.5 truncate font-display text-[15px] font-semibold tabular-nums text-foreground">
-                        {formatCurrency(spotlight.revenue_generated ?? 0)}
-                      </dd>
-                    </div>
-                  </div>
+                      <ArrowUpRight className="h-3 w-3" />
+                    </Link>
+                  ) : null}
                 </div>
-              </Link>
-            ) : (
-              <div className="relative overflow-hidden rounded-2xl border border-dashed border-border bg-card/60 p-6 shadow-sm md:p-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-deep">
-                  Étude à la une
-                </p>
-                <p className="mt-3 font-display text-lg font-semibold text-foreground">
-                  Les études publiées apparaîtront ici.
-                </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Publie une étude depuis l&apos;admin pour faire apparaître
-                  automatiquement la plus performante dans ce bloc.
-                </p>
+
+                <div>
+                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
+                    {spotlight?.project_name ?? "Restaurant Le Colibri"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {spotlight?.sector ?? "Restauration"}
+                    {spotlight?.client_name
+                      ? ` · ${spotlight.client_name}`
+                      : ""}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Retour sur investissement
+                  </p>
+                  <p className="mt-1 flex items-baseline gap-1.5 font-display font-black leading-none tracking-tight text-accent">
+                    <span className="text-3xl">×</span>
+                    <span className="text-[72px] tabular-nums">
+                      {spotlight?.roi ? spotlight.roi.toFixed(1) : "8.5"}
+                    </span>
+                  </p>
+                </div>
+
+                <dl className="grid grid-cols-2 gap-4 border-t border-border/70 pt-5 text-xs">
+                  <div>
+                    <dt className="text-muted-foreground">Budget ads</dt>
+                    <dd className="mt-0.5 font-display text-sm font-semibold tabular-nums text-foreground">
+                      {formatCurrency(spotlight?.ad_budget ?? 3500)}
+                    </dd>
+                  </div>
+                  <div className="text-right">
+                    <dt className="text-muted-foreground">CA généré</dt>
+                    <dd className="mt-0.5 font-display text-sm font-semibold tabular-nums text-foreground">
+                      {formatCurrency(spotlight?.revenue_generated ?? 29750)}
+                    </dd>
+                  </div>
+                </dl>
+
+                {!spotlight ? (
+                  <p className="text-[10px] italic text-muted-foreground">
+                    Exemple illustratif. Les études publiées apparaîtront ici.
+                  </p>
+                ) : null}
               </div>
-            )}
+            </div>
           </motion.aside>
         </div>
 
