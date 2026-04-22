@@ -43,13 +43,13 @@ function PhoneMockup({ site, index }: { site: ShowcaseSite; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px 0px" }}
       transition={{ duration: 0.55, ease, delay: index * 0.06 }}
-      className="group flex w-[min(85vw,300px)] shrink-0 snap-center flex-col items-center gap-5"
+      className="group flex w-[min(85vw,280px)] shrink-0 snap-center flex-col items-center gap-5"
       aria-label={`Aperçu du site ${site.title}`}
     >
       {/* Phone body */}
       <div
         className={cn(
-          "relative aspect-[9/19] w-full rounded-[36px] bg-[#0b1020] p-[10px]",
+          "relative aspect-[9/15] w-full rounded-[32px] bg-[#0b1020] p-[9px]",
           "shadow-[0_30px_60px_-20px_rgba(11,16,32,0.45),0_12px_24px_-12px_rgba(11,16,32,0.3)]",
           "ring-1 ring-white/5",
         )}
@@ -81,7 +81,7 @@ function PhoneMockup({ site, index }: { site: ShowcaseSite; index: number }) {
         />
 
         {/* Screen */}
-        <div className="relative h-full w-full overflow-hidden rounded-[28px] bg-white">
+        <div className="relative h-full w-full overflow-hidden rounded-[24px] bg-white">
           {/* Status bar overlay */}
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-[6px] text-[9px] font-semibold tracking-tight text-black mix-blend-difference">
             <span className="text-white/90">
