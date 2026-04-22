@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { FranchiseSettings } from "@/lib/public-data";
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 export function Footer({ settings }: { settings: FranchiseSettings | null }) {
   const brand = settings?.franchise_name ?? "Portfolio ROI";
@@ -8,7 +7,7 @@ export function Footer({ settings }: { settings: FranchiseSettings | null }) {
 
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-20 md:px-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1.6fr_1fr] md:gap-20 md:px-8">
         <div className="space-y-4">
           <div className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-sm ring-1 ring-black/5">
@@ -26,14 +25,14 @@ export function Footer({ settings }: { settings: FranchiseSettings | null }) {
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 md:justify-self-end">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Explorer
           </p>
           <ul className="space-y-2 text-sm">
             <li>
               <Link
-                href="/#etudes"
+                href="/etudes-de-cas"
                 className="text-foreground/80 transition-colors hover:text-foreground"
               >
                 Études de cas
@@ -55,55 +54,6 @@ export function Footer({ settings }: { settings: FranchiseSettings | null }) {
                 Services
               </Link>
             </li>
-          </ul>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Nous contacter
-          </p>
-          <ul className="space-y-2 text-sm">
-            {settings?.email ? (
-              <li>
-                <a
-                  href={`mailto:${settings.email}`}
-                  className="inline-flex items-center gap-2 text-foreground/80 transition-colors hover:text-foreground"
-                >
-                  <Mail className="h-3.5 w-3.5" />
-                  {settings.email}
-                </a>
-              </li>
-            ) : null}
-            {settings?.phone ? (
-              <li>
-                <a
-                  href={`tel:${settings.phone.replace(/\s/g, "")}`}
-                  className="inline-flex items-center gap-2 text-foreground/80 transition-colors hover:text-foreground"
-                >
-                  <Phone className="h-3.5 w-3.5" />
-                  {settings.phone}
-                </a>
-              </li>
-            ) : null}
-            {settings?.whatsapp_url ? (
-              <li>
-                <a
-                  href={settings.whatsapp_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-foreground/80 transition-colors hover:text-foreground"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  WhatsApp
-                </a>
-              </li>
-            ) : null}
-            {settings?.address ? (
-              <li className="inline-flex items-start gap-2 text-muted-foreground">
-                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                <span className="whitespace-pre-line">{settings.address}</span>
-              </li>
-            ) : null}
           </ul>
         </div>
       </div>
