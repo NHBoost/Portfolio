@@ -12,7 +12,6 @@ import { LogosStrip } from "@/components/public/logos-strip";
 import { GlobalStatsBand } from "@/components/public/global-stats-band";
 import { ProcessSection } from "@/components/public/process-section";
 import { FeaturedTestimonial } from "@/components/public/featured-testimonial";
-import { FinalCta } from "@/components/public/final-cta";
 import { CaseStudiesSection } from "@/components/public/case-studies-section";
 import { RealisationsGallery } from "@/components/public/realisations-gallery";
 import { ServicesGrid } from "@/components/public/services-grid";
@@ -125,7 +124,6 @@ export default async function HomePage() {
       <FeaturedTestimonial entry={testimonial} />
       <ServicesGrid items={services} />
       <RealisationsGallery items={realisations} />
-      <FinalCta settings={settings} />
     </>
   );
 }

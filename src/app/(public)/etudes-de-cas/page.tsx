@@ -1,8 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { CaseStudyGrid, type CaseStudyCardData } from "@/components/public/case-study-card";
 import { CaseStudiesFilters } from "@/components/public/case-studies-filters";
-import { getFranchiseSettings } from "@/lib/public-data";
-import { FinalCta } from "@/components/public/final-cta";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -28,10 +26,9 @@ export default async function CaseStudiesListPublicPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: sectors }, { data: services }, settings] = await Promise.all([
+  const [{ data: sectors }, { data: services }] = await Promise.all([
     supabase.from("sectors").select("slug, name").order("name"),
     supabase.from("services").select("slug, name").order("name"),
-    getFranchiseSettings(),
   ]);
 
   // Resolve sector slug → id for filtering
@@ -150,13 +147,6 @@ export default async function CaseStudiesListPublicPage({
         </div>
         <CaseStudyGrid items={items} />
       </section>
-
-      <FinalCta
-        settings={settings}
-        eyebrow="Votre projet"
-        title="Imaginez votre étude de cas dans cette liste."
-        description="On évalue votre potentiel en 20 minutes. Si le ROI n'y est pas, on vous le dit directement."
-      />
     </>
   );
 }

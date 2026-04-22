@@ -107,7 +107,7 @@ export function FeaturedTestimonial({
             ) : null}
             <Link
               href={`/etudes-de-cas/${entry.slug}`}
-              className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:border-brand/60 hover:bg-brand/10 hover:text-brand"
+              className="group inline-flex items-center gap-1.5 text-xs font-medium text-accent-foreground/80 transition-colors hover:text-brand"
             >
               Lire l&apos;étude complète
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 import type { FranchiseSettings } from "@/lib/public-data";
 
 type NavLink = {
@@ -52,10 +51,6 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
   }, [pathname]);
 
   const brandName = settings?.franchise_name ?? "Portfolio ROI";
-  const cta =
-    settings?.whatsapp_url ??
-    (settings?.email ? `mailto:${settings.email}` : null);
-  const ctaLabel = settings?.cta_text ?? "Prendre rendez-vous";
 
   return (
     <>
@@ -147,22 +142,8 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
             })}
           </nav>
 
-          {/* CTA + MOBILE */}
+          {/* MOBILE MENU TOGGLE */}
           <div className="flex items-center gap-2">
-            {cta ? (
-              <Link
-                href={cta}
-                target={cta.startsWith("http") ? "_blank" : undefined}
-                rel={cta.startsWith("http") ? "noreferrer" : undefined}
-                className={cn(
-                  buttonVariants({ variant: "default", size: "sm" }),
-                  "group hidden h-9 gap-1.5 rounded-full px-4 text-[12.5px] font-semibold shadow-[0_1px_0_rgba(255,255,255,0.08)_inset,0_4px_12px_-2px_rgba(62,100,147,0.35)] transition-shadow hover:shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_6px_18px_-2px_rgba(62,100,147,0.45)] md:inline-flex",
-                )}
-              >
-                {ctaLabel}
-                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-            ) : null}
             <button
               type="button"
               aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
@@ -207,20 +188,7 @@ export function Navbar({ settings }: { settings: FranchiseSettings | null }) {
                   <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
               ))}
-              {cta ? (
-                <Link
-                  href={cta}
-                  target={cta.startsWith("http") ? "_blank" : undefined}
-                  rel={cta.startsWith("http") ? "noreferrer" : undefined}
-                  className={cn(
-                    buttonVariants({ variant: "default", size: "lg" }),
-                    "mt-8 w-full rounded-full",
-                  )}
-                >
-                  {ctaLabel}
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Link>
-              ) : null}
+              {/* CTA mobile retiré */}
             </motion.nav>
           </motion.div>
         ) : null}

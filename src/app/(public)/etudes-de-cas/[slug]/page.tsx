@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getFranchiseSettings } from "@/lib/public-data";
-import { FinalCta } from "@/components/public/final-cta";
 import { CaseHero } from "@/components/public/case-study/hero";
 import {
   PresentationSection,
@@ -54,17 +52,14 @@ export default async function CaseStudyDetailPage({
   const { slug } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: study, error }, settings] = await Promise.all([
-    supabase
-      .from("case_studies")
-      .select(
-        "*, sector:sectors(id, name, slug), services:case_study_services(service:services(slug, name)), media:case_study_media(id, media_type, file_url, title, description, sort_order), proofs:case_study_proofs(id, proof_type, title, file_url, note)",
-      )
-      .eq("slug", slug)
-      .eq("status", "published")
-      .maybeSingle(),
-    getFranchiseSettings(),
-  ]);
+  const { data: study, error } = await supabase
+    .from("case_studies")
+    .select(
+      "*, sector:sectors(id, name, slug), services:case_study_services(service:services(slug, name)), media:case_study_media(id, media_type, file_url, title, description, sort_order), proofs:case_study_proofs(id, proof_type, title, file_url, note)",
+    )
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
 
   if (error || !study) {
     notFound();
@@ -188,13 +183,6 @@ export default async function CaseStudyDetailPage({
       />
 
       <RelatedCases items={related} />
-
-      <FinalCta
-        settings={settings}
-        eyebrow="Votre projet"
-        title="On peut obtenir ce même résultat pour vous."
-        description="Un diagnostic en 20 minutes pour évaluer le ROI réaliste de votre marketing. Aucun engagement."
-      />
     </article>
   );
 }

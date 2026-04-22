@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { formatCurrency, formatNumber, formatRoi } from "@/lib/format";
 import type { FranchiseSettings } from "@/lib/public-data";
 
@@ -43,7 +41,6 @@ const item = {
 };
 
 export function Hero({
-  settings,
   spotlight,
   trustStats,
 }: {
@@ -51,11 +48,6 @@ export function Hero({
   spotlight: Spotlight;
   trustStats?: HeroTrustStats;
 }) {
-  const primaryCta =
-    settings?.whatsapp_url ??
-    (settings?.email ? `mailto:${settings.email}` : "#etudes");
-  const primaryLabel = settings?.cta_text ?? "Parler à un expert";
-
   const trustItems: { label: string; value: string }[] = [];
   if (trustStats) {
     if (trustStats.publishedCount > 0) {
@@ -129,34 +121,6 @@ export function Hero({
               combien ça rapporte à nos clients — en leads, en clients, en
               chiffre d&apos;affaires réellement encaissé.
             </motion.p>
-
-            <motion.div
-              variants={item}
-              className="flex flex-wrap items-center gap-3"
-            >
-              <Link
-                href={primaryCta}
-                target={primaryCta.startsWith("http") ? "_blank" : undefined}
-                rel={primaryCta.startsWith("http") ? "noreferrer" : undefined}
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" }),
-                  "group h-11 gap-1.5 rounded-full px-5 text-[13px] font-semibold shadow-[0_1px_0_rgba(255,255,255,0.08)_inset,0_6px_18px_-4px_rgba(62,100,147,0.4)] transition-shadow hover:shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_8px_24px_-4px_rgba(62,100,147,0.5)]",
-                )}
-              >
-                {primaryLabel}
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-              <Link
-                href="#etudes"
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "lg" }),
-                  "group h-11 gap-1.5 rounded-full px-5 text-[13px] font-semibold text-foreground",
-                )}
-              >
-                Voir les études
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </motion.div>
 
             {trustItems.length > 0 ? (
               <motion.dl
@@ -268,20 +232,6 @@ export function Hero({
           </motion.aside>
         </div>
 
-        <motion.a
-          href="#resultats"
-          variants={item}
-          aria-label="Scroller vers les résultats"
-          className="group hidden items-center gap-2 self-center text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
-        >
-          Scroller
-          <span
-            aria-hidden
-            className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-all group-hover:border-brand/40 group-hover:bg-brand/5 group-hover:text-brand-deep"
-          >
-            <ArrowDown className="h-3 w-3" />
-          </span>
-        </motion.a>
       </motion.div>
     </section>
   );
