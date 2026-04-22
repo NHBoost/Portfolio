@@ -1,6 +1,7 @@
 import { getFranchiseSettings } from "@/lib/public-data";
 import { Navbar } from "@/components/public/navbar";
 import { Footer } from "@/components/public/footer";
+import { BackToTop } from "@/components/public/back-to-top";
 
 export default async function PublicLayout({
   children,
@@ -16,6 +17,7 @@ export default async function PublicLayout({
         {children}
       </main>
       <Footer settings={settings} />
+      <BackToTop />
     </div>
   );
 }

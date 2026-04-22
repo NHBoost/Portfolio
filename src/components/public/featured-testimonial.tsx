@@ -27,6 +27,7 @@ export function FeaturedTestimonial({
 
   return (
     <section
+      id="temoignage"
       aria-labelledby="featured-testimonial-title"
       className="relative overflow-hidden bg-accent py-10 text-accent-foreground"
     >

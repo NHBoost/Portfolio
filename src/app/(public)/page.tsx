@@ -17,6 +17,7 @@ import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
 import { RealisationsGallery } from "@/components/public/realisations-gallery";
 import { ServicesGrid } from "@/components/public/services-grid";
 import { WebsitesShowcase } from "@/components/public/websites-showcase";
+import { SectionsProgress } from "@/components/public/sections-progress";
 import type { CaseStudyCardData } from "@/components/public/case-study-card";
 
 export const revalidate = 60;
@@ -114,8 +115,19 @@ export default async function HomePage() {
     totalRevenue: stats?.total_revenue ? Number(stats.total_revenue) : null,
   };
 
+  const progressSections = [
+    { id: "etudes", label: "Études" },
+    { id: "sites", label: "Sites web" },
+    { id: "resultats", label: "Résultats" },
+    { id: "process", label: "Process" },
+    { id: "temoignage", label: "Témoignage" },
+    { id: "services", label: "Services" },
+    { id: "realisations", label: "Réalisations" },
+  ];
+
   return (
     <>
+      <SectionsProgress sections={progressSections} />
       <Hero
         settings={settings}
         spotlight={spotlight}
