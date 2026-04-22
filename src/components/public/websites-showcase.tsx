@@ -169,11 +169,20 @@ function PhoneMockup({ site, index }: { site: ShowcaseSite; index: number }) {
             >
               <div
                 className={cn(
-                  "relative h-full w-full transform-gpu will-change-transform",
-                  "transition-transform duration-[9000ms] ease-linear",
-                  // On hover, translate iframe up to reveal bottom of site
-                  "group-hover:-translate-y-[60%]",
+                  "absolute inset-0 transform-gpu will-change-transform",
+                  // Translate du haut au bas du site scalé au survol.
+                  // Hauteur scalée ≈ 6000 × 0.65 = 3900 px ; on retranche
+                  // la hauteur écran via la variable --screen-h pour laisser
+                  // apparaître entièrement le bas du site.
+                  "transition-transform duration-[18000ms] ease-linear",
+                  "group-hover:[transform:translateY(calc(var(--screen-h)_-_var(--iframe-scaled-h)))]",
                 )}
+                style={
+                  {
+                    "--iframe-scaled-h": "3900px",
+                    "--screen-h": "100%",
+                  } as React.CSSProperties
+                }
               >
                 <iframe
                   ref={iframeRef}
@@ -187,9 +196,10 @@ function PhoneMockup({ site, index }: { site: ShowcaseSite; index: number }) {
                   className="pointer-events-none block border-0"
                   style={{
                     // Rendu en viewport mobile 400px puis scale pour remplir
-                    // la largeur utile de l'écran du mockup (~260px)
+                    // la largeur utile de l'écran du mockup (~260px).
+                    // Hauteur 6000 px pour couvrir un site long complet.
                     width: "400px",
-                    height: "2400px",
+                    height: "6000px",
                     transform: "scale(0.65)",
                     transformOrigin: "top left",
                   }}
