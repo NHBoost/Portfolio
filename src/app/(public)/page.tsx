@@ -122,10 +122,7 @@ export default async function HomePage() {
         trustStats={trustStats}
       />
       <LogosStrip items={logos} />
-      <GlobalStatsBand stats={stats} />
-      <ProcessSection />
       <CaseStudiesCarousel items={topStudies} />
-      <FeaturedTestimonial entry={testimonial} />
       <WebsitesShowcase
         sites={websites.map((w) => ({
           url: w.url,
@@ -134,6 +131,9 @@ export default async function HomePage() {
           caseSlug: w.caseSlug,
         }))}
       />
+      <GlobalStatsBand stats={stats} />
+      <ProcessSection />
+      <FeaturedTestimonial entry={testimonial} />
       <ServicesGrid items={services} />
       <RealisationsGallery items={realisations} />
     </>
