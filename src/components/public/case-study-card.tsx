@@ -43,7 +43,7 @@ export function CaseStudyCard({
       viewport={{ once: true, margin: "-40px 0px" }}
       transition={{ duration: 0.55, ease, delay: index * 0.05 }}
       className={cn(
-        "group relative overflow-hidden rounded-3xl border border-border bg-card transition-shadow hover:shadow-lg",
+        "group relative flex w-full flex-col overflow-hidden rounded-3xl border border-border bg-card transition-shadow hover:shadow-lg",
         isFeature ? "md:col-span-2 md:row-span-2" : "",
       )}
     >

@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CaseStudyGrid, type CaseStudyCardData } from "@/components/public/case-study-card";
+import type { CaseStudyCardData } from "@/components/public/case-study-card";
 import { CaseStudiesFilters } from "@/components/public/case-studies-filters";
+import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -136,17 +137,37 @@ export default async function CaseStudiesListPublicPage({
       </section>
 
       <section
-        id="etudes"
-        className="mx-auto w-full max-w-6xl px-4 pb-10 md:px-8"
+        id="etudes-filtres"
+        className="mx-auto w-full max-w-6xl px-4 md:px-8"
       >
-        <div className="mb-8">
-          <CaseStudiesFilters
-            sectors={sectors ?? []}
-            services={services ?? []}
-          />
-        </div>
-        <CaseStudyGrid items={items} />
+        <CaseStudiesFilters
+          sectors={sectors ?? []}
+          services={services ?? []}
+        />
       </section>
+
+      {items.length > 0 ? (
+        <CaseStudiesCarousel
+          items={items}
+          autoAdvance
+          surface="transparent"
+          eyebrow={`${items.length} étude${items.length > 1 ? "s" : ""} sélectionnée${items.length > 1 ? "s" : ""}`}
+          title="Faites défiler la bibliothèque."
+          subtitle="Chaque étude expose la stratégie, l'exécution, les chiffres mesurés et le ROI concret."
+          allHref={null}
+        />
+      ) : (
+        <section className="mx-auto w-full max-w-6xl px-4 py-10 md:px-8">
+          <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
+            <p className="font-display text-xl font-semibold text-foreground">
+              Rien ne correspond à ces filtres
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Ajustez les filtres pour voir d&apos;autres études.
+            </p>
+          </div>
+        </section>
+      )}
     </>
   );
 }
