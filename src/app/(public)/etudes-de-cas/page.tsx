@@ -137,37 +137,38 @@ export default async function CaseStudiesListPublicPage({
       </section>
 
       <section
-        id="etudes-filtres"
-        className="mx-auto w-full max-w-6xl px-4 md:px-8"
+        aria-label="Bibliothèque filtrée"
+        className="mx-auto w-full max-w-6xl px-4 pb-16 md:px-8"
       >
-        <CaseStudiesFilters
-          sectors={sectors ?? []}
-          services={services ?? []}
-        />
-      </section>
-
-      {items.length > 0 ? (
-        <CaseStudiesCarousel
-          items={items}
-          autoAdvance
-          surface="transparent"
-          eyebrow={`${items.length} étude${items.length > 1 ? "s" : ""} sélectionnée${items.length > 1 ? "s" : ""}`}
-          title="Faites défiler la bibliothèque."
-          subtitle="Chaque étude expose la stratégie, l'exécution, les chiffres mesurés et le ROI concret."
-          allHref={null}
-        />
-      ) : (
-        <section className="mx-auto w-full max-w-6xl px-4 py-10 md:px-8">
-          <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
-            <p className="font-display text-xl font-semibold text-foreground">
-              Rien ne correspond à ces filtres
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Ajustez les filtres pour voir d&apos;autres études.
-            </p>
+        <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-10">
+          <CaseStudiesFilters
+            sectors={sectors ?? []}
+            services={services ?? []}
+          />
+          <div className="min-w-0">
+            {items.length > 0 ? (
+              <CaseStudiesCarousel
+                items={items}
+                autoAdvance
+                surface="transparent"
+                eyebrow={`${items.length} étude${items.length > 1 ? "s" : ""} sélectionnée${items.length > 1 ? "s" : ""}`}
+                title="Faites défiler la bibliothèque."
+                subtitle="Chaque étude expose la stratégie, l'exécution, les chiffres mesurés et le ROI concret."
+                allHref={null}
+              />
+            ) : (
+              <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
+                <p className="font-display text-xl font-semibold text-foreground">
+                  Rien ne correspond à ces filtres
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Ajustez les filtres pour voir d&apos;autres études.
+                </p>
+              </div>
+            )}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </>
   );
 }
