@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import { Trash2, UploadCloud } from "lucide-react";
+import { Link as LinkIcon, Trash2, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +43,8 @@ export function ProofsManager({
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [externalUrl, setExternalUrl] = useState("");
+  const [mode, setMode] = useState<"file" | "url">("file");
   const [uploading, setUploading] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -60,13 +62,21 @@ export function ProofsManager({
     setUploading(true);
     try {
       let fileUrl: string | undefined;
-      if (pendingFile) {
+      if (mode === "file" && pendingFile) {
         const { url } = await uploadToStorage(
           "case-study-images",
           caseStudyId,
           pendingFile,
         );
         fileUrl = url;
+      } else if (mode === "url" && externalUrl.trim()) {
+        try {
+          new URL(externalUrl.trim());
+        } catch {
+          toast.error("URL invalide");
+          return;
+        }
+        fileUrl = externalUrl.trim();
       }
       const result = await addProofAction({
         caseStudyId,
@@ -79,10 +89,11 @@ export function ProofsManager({
         toast.error(result.error ?? "Ajout impossible");
         return;
       }
-      toast.success("Preuve ajoutee");
+      toast.success("Preuve ajoutée");
       setTitle("");
       setNote("");
       setPendingFile(null);
+      setExternalUrl("");
       router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Upload impossible");
@@ -140,25 +151,66 @@ export function ProofsManager({
             rows={2}
           />
         </div>
-        <div className="md:col-span-2">
-          <div
-            {...getRootProps()}
-            className={
-              "flex h-20 cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-dashed text-sm transition-colors " +
-              (isDragActive
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-border bg-muted text-muted-foreground hover:bg-muted/70") +
-              (uploading ? " pointer-events-none opacity-60" : "")
-            }
-          >
-            <input {...getInputProps()} />
-            <UploadCloud className="h-4 w-4" />
-            {pendingFile
-              ? `Fichier pret : ${pendingFile.name}`
-              : isDragActive
-                ? "Depose l'image ici"
-                : "Deposer / choisir une image (optionnel)"}
+        <div className="md:col-span-2 space-y-2">
+          {/* Mode tabs */}
+          <div className="inline-flex items-center rounded-full border border-border bg-background p-0.5 text-[11px]">
+            <button
+              type="button"
+              onClick={() => setMode("file")}
+              className={
+                "inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium transition-colors " +
+                (mode === "file"
+                  ? "bg-accent text-accent-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              <UploadCloud className="h-3 w-3" />
+              Fichier
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("url")}
+              className={
+                "inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium transition-colors " +
+                (mode === "url"
+                  ? "bg-accent text-accent-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              <LinkIcon className="h-3 w-3" />
+              URL
+            </button>
           </div>
+
+          {mode === "file" ? (
+            <div
+              {...getRootProps()}
+              className={
+                "flex h-20 cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-dashed text-sm transition-colors " +
+                (isDragActive
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border bg-muted text-muted-foreground hover:bg-muted/70") +
+                (uploading ? " pointer-events-none opacity-60" : "")
+              }
+            >
+              <input {...getInputProps()} />
+              <UploadCloud className="h-4 w-4" />
+              {pendingFile
+                ? `Fichier prêt : ${pendingFile.name}`
+                : isDragActive
+                  ? "Déposez l'image ici"
+                  : "Déposez / choisissez une image (optionnel)"}
+            </div>
+          ) : (
+            <Input
+              type="url"
+              value={externalUrl}
+              onChange={(e) => setExternalUrl(e.target.value)}
+              placeholder="https://... (capture hébergée ailleurs)"
+              className="font-mono text-sm"
+              disabled={uploading}
+            />
+          )}
         </div>
         <div className="md:col-span-2 flex justify-end">
           <Button
