@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaUrlInput } from "@/components/admin/media-url-input";
 import type { Database } from "@/types/database";
 import { updateFranchiseAction } from "./actions";
 
@@ -57,6 +58,7 @@ export function FranchiseForm({ settings }: { settings: Settings }) {
   const [primary, setPrimary] = useState(settings.primary_color);
   const [secondary, setSecondary] = useState(settings.secondary_color);
   const [accent, setAccent] = useState(settings.accent_color);
+  const [logoUrl, setLogoUrl] = useState(settings.logo_url ?? "");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,6 +66,7 @@ export function FranchiseForm({ settings }: { settings: Settings }) {
     fd.set("primary_color", primary);
     fd.set("secondary_color", secondary);
     fd.set("accent_color", accent);
+    fd.set("logo_url", logoUrl);
     startTransition(async () => {
       const result = await updateFranchiseAction(settings.id, fd);
       if (!result.success) {
@@ -88,12 +91,16 @@ export function FranchiseForm({ settings }: { settings: Settings }) {
           />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="logo_url">Logo URL</Label>
-          <Input
+          <Label htmlFor="logo_url">Logo</Label>
+          <MediaUrlInput
             id="logo_url"
             name="logo_url"
-            defaultValue={settings.logo_url ?? ""}
-            placeholder="https://..."
+            value={logoUrl}
+            onChange={setLogoUrl}
+            accept={{ "image/*": [] }}
+            pathPrefix="branding/logo"
+            previewHint="image"
+            disabled={isPending}
           />
         </div>
       </div>

@@ -3,7 +3,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 export type StorageBucket =
   | "case-study-images"
   | "case-study-videos"
-  | "logos";
+  | "logos"
+  | "realisations";
 
 const VIDEO_TYPES = ["video", "ugc"] as const;
 
@@ -14,9 +15,22 @@ export function bucketForMediaType(mediaType: string): StorageBucket {
   return "case-study-images";
 }
 
+/**
+ * Pick the right bucket for a given MIME type:
+ *  - image/*        → case-study-images
+ *  - video/*        → case-study-videos
+ *  - audio/* & rest → realisations (unified, supports all)
+ */
+export function bucketForMimeType(mime: string): StorageBucket {
+  if (mime.startsWith("image/")) return "case-study-images";
+  if (mime.startsWith("video/")) return "case-study-videos";
+  if (mime.startsWith("audio/")) return "realisations";
+  return "realisations";
+}
+
 export async function uploadToStorage(
   bucket: StorageBucket,
-  caseStudyId: string,
+  pathPrefix: string,
   file: File,
 ): Promise<{ url: string; path: string }> {
   const supabase = createSupabaseBrowserClient();
@@ -25,7 +39,7 @@ export async function uploadToStorage(
     .replace(/\.[^.]+$/, "")
     .replace(/[^a-zA-Z0-9-_]/g, "-")
     .slice(0, 40);
-  const path = `${caseStudyId}/${Date.now()}-${safeName}.${ext}`;
+  const path = `${pathPrefix}/${Date.now()}-${safeName}.${ext}`;
 
   const { error } = await supabase.storage
     .from(bucket)
@@ -37,4 +51,16 @@ export async function uploadToStorage(
 
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return { url: data.publicUrl, path };
+}
+
+/**
+ * Convenience helper: upload any file, auto-routing to the right bucket.
+ */
+export async function uploadFileAuto(
+  file: File,
+  pathPrefix = "uploads",
+): Promise<{ url: string; path: string; bucket: StorageBucket }> {
+  const bucket = bucketForMimeType(file.type);
+  const result = await uploadToStorage(bucket, pathPrefix, file);
+  return { ...result, bucket };
 }

@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MediaUrlInput } from "@/components/admin/media-url-input";
 import type { Database } from "@/types/database";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatRoi } from "@/lib/format";
@@ -217,6 +218,12 @@ export function CaseStudyEditForm({
   const [roiOverride, setRoiOverride] = useState<string>(
     String(caseStudy.roi ?? ""),
   );
+  const [coverImageUrl, setCoverImageUrl] = useState<string>(
+    caseStudy.cover_image_url ?? "",
+  );
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
+    caseStudy.client_logo_url ?? "",
+  );
 
   const liveRoi = useMemo(() => {
     const b = numberValue(adBudget);
@@ -239,6 +246,8 @@ export function CaseStudyEditForm({
     const fd = new FormData(event.currentTarget);
     fd.set("sector_id", sectorId === NONE ? "" : sectorId);
     fd.set("status", status);
+    fd.set("cover_image_url", coverImageUrl);
+    fd.set("client_logo_url", clientLogoUrl);
     // If user didn't explicitly override ROI, persist the live value
     if (!fd.get("roi") && liveRoi) {
       fd.set("roi", liveRoi.toFixed(2));
@@ -356,18 +365,28 @@ export function CaseStudyEditForm({
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Cover image URL" name="cover_image_url">
-            <Input
+          <Field label="Image de couverture" name="cover_image_url">
+            <MediaUrlInput
+              id="cover_image_url"
               name="cover_image_url"
-              defaultValue={caseStudy.cover_image_url ?? ""}
-              placeholder="https://..."
+              value={coverImageUrl}
+              onChange={setCoverImageUrl}
+              accept={{ "image/*": [] }}
+              pathPrefix={`case-studies/${caseStudy.slug ?? caseStudy.id}/cover`}
+              previewHint="image"
+              disabled={isPending}
             />
           </Field>
-          <Field label="Logo client URL" name="client_logo_url">
-            <Input
+          <Field label="Logo client" name="client_logo_url">
+            <MediaUrlInput
+              id="client_logo_url"
               name="client_logo_url"
-              defaultValue={caseStudy.client_logo_url ?? ""}
-              placeholder="https://..."
+              value={clientLogoUrl}
+              onChange={setClientLogoUrl}
+              accept={{ "image/*": [] }}
+              pathPrefix={`case-studies/${caseStudy.slug ?? caseStudy.id}/logo`}
+              previewHint="image"
+              disabled={isPending}
             />
           </Field>
         </div>

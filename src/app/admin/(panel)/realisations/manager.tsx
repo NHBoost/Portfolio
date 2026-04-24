@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MediaUrlInput } from "@/components/admin/media-url-input";
 import { cn } from "@/lib/utils";
 import {
   createRealisationAction,
@@ -398,24 +399,50 @@ function RealisationForm({
   const [caseStudyId, setCaseStudyId] = useState<string>(
     initial?.case_study_id ?? NONE,
   );
+  const [mediaUrl, setMediaUrl] = useState<string>(initial?.media_url ?? "");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>(
+    initial?.thumbnail_url ?? "",
+  );
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     fd.set("type", type);
     fd.set("case_study_id", caseStudyId === NONE ? "" : caseStudyId);
+    fd.set("media_url", mediaUrl);
+    fd.set("thumbnail_url", thumbnailUrl);
     onSubmit(fd);
   }
 
   const isPodcastOrSocial = type === "podcast" || type === "social";
   const mediaLabel =
     type === "ads"
-      ? "URL de l'image"
+      ? "Image"
       : type === "video"
-        ? "URL de la vidéo (MP4 ou YouTube)"
+        ? "Vidéo (MP4/WebM ou lien YouTube)"
         : type === "podcast"
-          ? "URL de l'audio (MP3) — optionnel"
-          : "URL de la vignette (image/vidéo) — optionnel";
+          ? "Audio (MP3) — optionnel"
+          : "Vignette (image/vidéo) — optionnel";
+
+  const mediaAccept: Record<string, string[]> =
+    type === "ads"
+      ? { "image/*": [] }
+      : type === "video"
+        ? { "video/*": [] }
+        : type === "podcast"
+          ? { "audio/*": [] }
+          : { "image/*": [], "video/*": [] };
+
+  const mediaHint: "image" | "video" | "audio" | "auto" =
+    type === "ads"
+      ? "image"
+      : type === "video"
+        ? "video"
+        : type === "podcast"
+          ? "audio"
+          : "auto";
+
+  const pathPrefix = `realisations/${type}`;
 
   return (
     <form
@@ -456,27 +483,31 @@ function RealisationForm({
           <Label htmlFor="media_url" className="text-xs font-medium">
             {mediaLabel}
           </Label>
-          <Input
+          <MediaUrlInput
             id="media_url"
             name="media_url"
-            type="url"
-            defaultValue={initial?.media_url ?? ""}
-            placeholder="https://..."
-            className="font-mono text-sm"
+            value={mediaUrl}
+            onChange={setMediaUrl}
+            accept={mediaAccept}
+            pathPrefix={pathPrefix}
+            previewHint={mediaHint}
+            disabled={isPending}
           />
         </div>
         {(type === "video" || isPodcastOrSocial) && (
           <div className="space-y-1.5 md:col-span-2">
             <Label htmlFor="thumbnail_url" className="text-xs font-medium">
-              URL de la vignette (optionnel)
+              Vignette (optionnel)
             </Label>
-            <Input
+            <MediaUrlInput
               id="thumbnail_url"
               name="thumbnail_url"
-              type="url"
-              defaultValue={initial?.thumbnail_url ?? ""}
-              placeholder="https://..."
-              className="font-mono text-sm"
+              value={thumbnailUrl}
+              onChange={setThumbnailUrl}
+              accept={{ "image/*": [] }}
+              pathPrefix={`${pathPrefix}/thumbnails`}
+              previewHint="image"
+              disabled={isPending}
             />
           </div>
         )}
