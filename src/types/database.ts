@@ -357,6 +357,59 @@ export type Database = {
         }
         Relationships: []
       }
+      realisations: {
+        Row: {
+          case_study_id: string | null
+          client_name: string | null
+          created_at: string
+          description: string | null
+          external_url: string | null
+          id: string
+          media_url: string | null
+          sort_order: number
+          thumbnail_url: string | null
+          title: string | null
+          type: Database["public"]["Enums"]["realisation_type"]
+          updated_at: string
+        }
+        Insert: {
+          case_study_id?: string | null
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          media_url?: string | null
+          sort_order?: number
+          thumbnail_url?: string | null
+          title?: string | null
+          type: Database["public"]["Enums"]["realisation_type"]
+          updated_at?: string
+        }
+        Update: {
+          case_study_id?: string | null
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          media_url?: string | null
+          sort_order?: number
+          thumbnail_url?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["realisation_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realisations_case_study_id_fkey"
+            columns: ["case_study_id"]
+            isOneToOne: false
+            referencedRelation: "case_studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sectors: {
         Row: {
           created_at: string
@@ -467,6 +520,7 @@ export type Database = {
         | "lead_form"
         | "analytics"
         | "testimonial"
+      realisation_type: "ads" | "video" | "social" | "podcast"
       user_role: "super_admin" | "admin" | "editor"
     }
     CompositeTypes: {
@@ -611,6 +665,7 @@ export const Constants = {
         "analytics",
         "testimonial",
       ],
+      realisation_type: ["ads", "video", "social", "podcast"],
       user_role: ["super_admin", "admin", "editor"],
     },
   },

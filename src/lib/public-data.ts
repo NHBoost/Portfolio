@@ -142,6 +142,55 @@ export async function getWebsites(): Promise<ShowcaseWebsite[]> {
   }));
 }
 
+export type RealisationPublic = {
+  id: string;
+  type: "ads" | "video" | "social" | "podcast";
+  title: string | null;
+  description: string | null;
+  media_url: string | null;
+  thumbnail_url: string | null;
+  external_url: string | null;
+  client_name: string | null;
+  caseSlug: string | null;
+};
+
+export async function getRealisationsByType(): Promise<
+  Record<"ads" | "video" | "social" | "podcast", RealisationPublic[]>
+> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("realisations")
+    .select(
+      "id, type, title, description, media_url, thumbnail_url, external_url, client_name, sort_order, case_study:case_studies(slug, status)",
+    )
+    .order("sort_order", { ascending: true });
+
+  const initial = {
+    ads: [] as RealisationPublic[],
+    video: [] as RealisationPublic[],
+    social: [] as RealisationPublic[],
+    podcast: [] as RealisationPublic[],
+  };
+
+  for (const row of data ?? []) {
+    initial[row.type].push({
+      id: row.id,
+      type: row.type,
+      title: row.title,
+      description: row.description,
+      media_url: row.media_url,
+      thumbnail_url: row.thumbnail_url,
+      external_url: row.external_url,
+      client_name: row.client_name,
+      caseSlug:
+        row.case_study && row.case_study.status === "published"
+          ? row.case_study.slug
+          : null,
+    });
+  }
+  return initial;
+}
+
 export async function getFeaturedTestimonial(): Promise<FeaturedTestimonialEntry | null> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase

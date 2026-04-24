@@ -8,6 +8,7 @@ import {
   Briefcase,
   ExternalLink,
   Globe,
+  Images,
   LayoutGrid,
   Palette,
   Tag,
@@ -25,6 +26,7 @@ const primary: Item[] = [
   { href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
   { href: "/admin/case-studies", label: "Études de cas", icon: Briefcase },
   { href: "/admin/websites", label: "Sites web", icon: Globe },
+  { href: "/admin/realisations", label: "Réalisations", icon: Images },
 ];
 
 const library: Item[] = [

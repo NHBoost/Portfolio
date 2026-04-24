@@ -3,7 +3,7 @@ import {
   getFeaturedTestimonial,
   getFranchiseSettings,
   getGlobalStats,
-  getRealisations,
+  getRealisationsByType,
   getServices,
   getTrustLogos,
   getWebsites,
@@ -14,7 +14,7 @@ import { GlobalStatsBand } from "@/components/public/global-stats-band";
 import { ProcessSection } from "@/components/public/process-section";
 import { FeaturedTestimonial } from "@/components/public/featured-testimonial";
 import { CaseStudiesCarousel } from "@/components/public/case-studies-carousel";
-import { RealisationsGallery } from "@/components/public/realisations-gallery";
+import { RealisationsByType } from "@/components/public/realisations-sections";
 import { ServicesGrid } from "@/components/public/services-grid";
 import { WebsitesShowcase } from "@/components/public/websites-showcase";
 import { SectionsProgress } from "@/components/public/sections-progress";
@@ -90,7 +90,7 @@ export default async function HomePage() {
     stats,
     spotlight,
     topStudies,
-    realisations,
+    realisationsByType,
     services,
     logos,
     testimonial,
@@ -101,7 +101,7 @@ export default async function HomePage() {
     getGlobalStats(),
     getSpotlight(),
     getTopCaseStudies(),
-    getRealisations(12),
+    getRealisationsByType(),
     getServices(),
     getTrustLogos(8),
     getFeaturedTestimonial(),
@@ -147,7 +147,7 @@ export default async function HomePage() {
       <ProcessSection />
       <FeaturedTestimonial entry={testimonial} />
       <ServicesGrid items={services} />
-      <RealisationsGallery items={realisations} />
+      <RealisationsByType groups={realisationsByType} />
     </>
   );
 }
